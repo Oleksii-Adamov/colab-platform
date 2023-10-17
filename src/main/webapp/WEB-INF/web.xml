@@ -7,7 +7,14 @@
         <servlet-name>HelloServlet</servlet-name>
         <servlet-class>com.example.colabplatform.HelloServlet</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>TestController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.TestController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestController</servlet-name>
+        <url-pattern>/api/test</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HelloServlet</servlet-name>
         <url-pattern>/hello-servlet</url-pattern>
