@@ -4,10 +4,6 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
     <servlet>
-        <servlet-name>HelloServlet</servlet-name>
-        <servlet-class>com.example.colabplatform.HelloServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>TestController</servlet-name>
         <servlet-class>com.example.colabplatform.controllers.TestController</servlet-class>
     </servlet>
@@ -15,8 +11,20 @@
         <servlet-name>TestController</servlet-name>
         <url-pattern>/api/test</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HelloServlet</servlet-name>
-        <url-pattern>/hello-servlet</url-pattern>
-    </servlet-mapping>
+    <filter>
+        <filter-name>ValidateJWTAccessTokenFilter</filter-name>
+        <filter-class>com.example.colabplatform.filters.ValidateJWTAccessTokenFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ValidateJWTAccessTokenFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>UserIdentificationFilter</filter-name>
+        <filter-class>com.example.colabplatform.filters.UserIdentificationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UserIdentificationFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
 </web-app>
