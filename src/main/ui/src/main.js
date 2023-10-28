@@ -22,11 +22,6 @@ export const keycloak = new Keycloak(keycloakInitOptions);
 
 const app = createApp(App);
 
-// app.use(router)
-
-
-//localStorage.setItem("user-token", keycloak.token);
-//console.log(keycloak.token);
 
 keycloak.init({ onLoad: 'login-required' }).then((auth) => {
 

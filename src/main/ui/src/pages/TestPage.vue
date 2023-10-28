@@ -1,4 +1,5 @@
 <template>
+  <UserNavigation></UserNavigation>
   <div>
     <h2>From server</h2>
     <ul>
@@ -11,6 +12,7 @@
 
 <script>
 import {getTestItems} from "@/services/testService";
+import UserNavigation from "@/components/UserNavigation";
 
 export default {
   name: "TestPage",
@@ -18,6 +20,9 @@ export default {
     return {
       items: []
     }
+  },
+  components: {
+    UserNavigation
   },
   methods: {
     getTestItems() {
