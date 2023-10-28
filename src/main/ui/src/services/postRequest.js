@@ -1,13 +1,13 @@
 import {whenTokenNotUndefined} from "@/authUtils";
 import axios from "axios";
 
-export default function postRequest(url, action) {
+export default function postRequest(url, action = null) {
     whenTokenNotUndefined().then( () => {
         axios({
             method: 'post',
             url: url,
             headers: {'Authorization': "Bearer " + localStorage.getItem('user-token')}
-        }).then((response) => {console.log(response); action(response);}).catch((error) => {
+        }).then((response) => {console.log(response);  if (action !== null) {action(response);}}).catch((error) => {
             if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx

@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestController extends AbstractController {
@@ -22,7 +21,7 @@ public class TestController extends AbstractController {
 //            List<Project> projects = new ArrayList<>();
 //            projects.add(new Project(1, "pr1"));
 //            projects.add(new Project(2, "pr2"));
-            List<Project> projects = DAOFactory.getInstance().getprojectDAO().getProjects();
+            List<Project> projects = DAOFactory.getInstance().getProjectDAO().getProjects();
             jsonResponse = new Gson().toJson(projects);
             this.responseOut.print(jsonResponse);
         } catch (Exception e) {

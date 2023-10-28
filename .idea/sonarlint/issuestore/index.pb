@@ -10,8 +10,6 @@ S
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 4
 mvnw,5\d\5d837c4ed85ecaaf932c506e80ff5d7b9f3d590d
-i
-9src/main/java/com/example/colabplatform/HelloServlet.java,5\f\5f6afd9186ba70110041ff1ca0e8703d907ae415
 8
 mvnw.cmd,1\f\1f1763f358c257ea3515417352b82b0165647ad1
 I
@@ -22,14 +20,10 @@ H
 src/main/ui/package.json,d\6\d6b012ef2211a24367fbb0acd4382f2d7df54944
 F
 src/main/ui/.gitignore,4\0\40c897c8e2a98e1ca165da75346b5fb17e86cfa8
-{
-Ksrc/main/java/com/example/colabplatform/controllers/AbstractController.java,d\1\d1760a935d3189ac3d9485436b5a38a655fccbf2
 m
 =src/main/java/com/example/colabplatform/enitities/Entity.java,9\d\9dfae541dbd3deb138faab5be9456026bc45916c
 M
 src/main/ui/public/index.html,7\5\7529390fd8253f24bfbe9d80eb1de04eed5c03a0
-n
->src/main/java/com/example/colabplatform/enitities/Project.java,5\7\573a56d8f23b21ea4cc7453e2773a80a2b0d0180
 E
 src/main/ui/README.md,0\4\04a8ae567db302efc4a73a2928a176f0b1ad8cac
 _

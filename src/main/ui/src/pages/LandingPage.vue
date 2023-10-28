@@ -5,6 +5,7 @@
 <script>
 import {bus, keycloak, router} from "@/main";
 import {whenTokenNotUndefined} from "@/authUtils";
+import {loginUser} from "@/services/userService";
 export default {
   name: "LandingPage",
   mounted() {
@@ -14,7 +15,7 @@ export default {
         if (refreshed) {
           console.log("Token forcibly refreshed");
           localStorage.setItem("user-token", keycloak.token);
-          // this.$router.push({path: '/test'});
+          loginUser();
           router.push({path: '/test'});
           bus.emit('unlocked');
         } else {
