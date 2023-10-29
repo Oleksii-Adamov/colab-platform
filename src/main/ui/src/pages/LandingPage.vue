@@ -15,9 +15,14 @@ export default {
         if (refreshed) {
           console.log("Token forcibly refreshed");
           localStorage.setItem("user-token", keycloak.token);
-          loginUser();
-          router.push({path: '/test'});
-          bus.emit('unlocked');
+          loginUser((response) => {
+            let userId = response.data.userId;
+            console.log("userId =", userId);
+            localStorage.setItem("userId", userId);
+            router.push({path: '/test'});
+            bus.emit('unlocked');
+            });
+
         } else {
           console.error('Token not forcibly refreshed');
           window.location.reload();

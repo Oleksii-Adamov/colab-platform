@@ -6,9 +6,13 @@ import com.example.colabplatform.enitities.User;
 import java.sql.SQLException;
 
 public class UserService {
-    public void registerIfNot(String keycloakId, String fullName) throws SQLException {
-        if(DAOFactory.getInstance().getUserDAO().getByKeycloakId(keycloakId) == null) {
-            DAOFactory.getInstance().getUserDAO().create(new User(keycloakId, fullName));
+    public Integer registerIfNot(String keycloakId, String fullName) throws SQLException {
+        User user = DAOFactory.getInstance().getUserDAO().getByKeycloakId(keycloakId);
+        if(user == null) {
+            return DAOFactory.getInstance().getUserDAO().create(new User(keycloakId, fullName));
+        }
+        else {
+            return user.getId();
         }
     }
 }

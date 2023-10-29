@@ -28,24 +28,20 @@ public class UserController extends AbstractController {
                     resp.sendError(400, e.getMessage());
                     return;
                 }
-                boolean success = true;
                 try {
-                    userService.registerIfNot(keycloakUserId, fullName);
+                    Integer userId = userService.registerIfNot(keycloakUserId, fullName);
+                    this.responseOut.print(String.format("{\"userId\": %d}", userId));
+                    logger.info("Sent " + String.format("{\"userId\": %d}", userId));
                 } catch (SQLException e) {
                     logger.error(e.getMessage());
-                    success = false;
-                }
-
-                if (success) {
-                    logger.info("success");
-                    resp.setStatus(200);
-                    this.responseOut.flush();
-                }
-                else {
-                    logger.error("Error in registration of user " + keycloakUserId);
+                    logger.error("Error in login/registration of user " + keycloakUserId);
                     resp.setContentType("text/html");
-                    resp.sendError(500, "Error in user registration");
+                    resp.sendError(500, "Error in user login/registration");
                 }
+            }
+            else {
+                logger.info("No such path " + req.getRequestURI());
+                resp.sendError(404, "No such path " + req.getRequestURI());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
