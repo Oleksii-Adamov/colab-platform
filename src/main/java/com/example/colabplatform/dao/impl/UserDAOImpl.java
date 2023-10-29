@@ -24,7 +24,7 @@ public class UserDAOImpl implements UserDAO {
             return rs.getInt(1);
         }
         else {
-            throw new UserDAOException("Didn't get created course id");
+            throw new UserDAOException("Didn't get created user id");
         }
     }
 

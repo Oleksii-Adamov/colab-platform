@@ -1,38 +1,39 @@
 package com.example.colabplatform.controllers;
 
+import com.example.colabplatform.exceptions.ProjectValidatorException;
+import com.example.colabplatform.services.ProjectService;
+import com.example.colabplatform.validators.ProjectValidator;
+import com.example.colabplatform.validators.UserValidator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProjectController extends AbstractController {
+    private static final ProjectService projectService = new ProjectService();
+    private static final ProjectValidator projectValidator = new ProjectValidator();
+    private static final UserValidator userValidator = new UserValidator();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             processRequest(req, resp);
             if (requestMapping("/create")) {
                 String name = req.getParameter("name");
-                String userId = req.getParameter("userId");
-//                try {
-//                    courseValidator.validateName(name);
-//                }  catch (ProjectValidatorException e) {
-//                    logger.info(e.getMessage());
-//                    resp.sendError(400, e.getMessage());
-//                    return;
-//                }
-//                Integer createdId = courseService.create(name, userId, maxGrade);
-//                this.responseOut.print(String.format("{id: %d}", createdId));
+                String userIdString = req.getParameter("userId");
+                Integer userId;
+                try {
+                    projectValidator.validateName(name);
+                    userId = userValidator.getValidatedUserId(userIdString);
+                }  catch (ProjectValidatorException e) {
+                    logger.info(e.getMessage());
+                    resp.sendError(400, e.getMessage());
+                    return;
+                }
+                Integer createdId = projectService.create(name, userId);
+                this.responseOut.print(String.format("{ProjectId: %d}", createdId));
             }
             else if (requestMapping("/join")) {
-//                Integer courseId;
-//                try {
-//                    courseId = courseValidator.getValidatedCourseId(req.getParameter("courseId"));
-//                }
-//                catch (ProjectValidatorException e) {
-//                    logger.info(e.getMessage());
-//                    resp.sendError(400, e.getMessage());
-//                    return;
-//                }
-//                courseService.joinCourse(userId, courseId);
+
             }
             else {
                 logger.info("No such path " + req.getRequestURI());

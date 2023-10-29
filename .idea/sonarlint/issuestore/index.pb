@@ -31,12 +31,6 @@ _
 
 Osrc/main/java/com/example/colabplatform/exceptions/ConnectionPoolException.java,d\4\d42f0ee8b0585d5c144decadc496bc14c8c695c6
 k
-;src/main/java/com/example/colabplatform/dao/ProjectDAO.java,c\2\c2cdc342af5962320931954d6b3fd4b6e0aff320
-n
->src/main/java/com/example/colabplatform/enitities/Project.java,5\7\573a56d8f23b21ea4cc7453e2773a80a2b0d0180
-t
-Dsrc/main/java/com/example/colabplatform/dao/impl/ProjectDAOImpl.java,3\e\3ef18be4e2f0da796b0759eaf6d8112e082dbfa7
-k
 ;src/main/java/com/example/colabplatform/enitities/User.java,9\1\91042eb6262953719620d805d21bdb9e0f4f145b
 k
 ;src/main/java/com/example/colabplatform/dao/DAOFactory.java,2\4\24c4b8aff44e37aede7c177e2eacd84050b19e6f
