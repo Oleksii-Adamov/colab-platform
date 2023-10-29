@@ -15,9 +15,10 @@ import java.util.List;
 public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public Integer create(Project project) throws SQLException {
+        String[] returnCols = { "PROJECTID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
-                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, CREATORUSERID) VALUES(?, ?)",
-                        Statement.RETURN_GENERATED_KEYS);
+                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, PROJECTDESCRIPTION, CREATORUSERID) VALUES(?, null, ?)",
+                        returnCols);
         preparedStatement.setString(1, project.getName());
         preparedStatement.setInt(2, project.getCreatorUserID());
         preparedStatement.execute();

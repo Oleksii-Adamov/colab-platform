@@ -19,6 +19,14 @@
         <servlet-name>UserController</servlet-name>
         <url-pattern>/api/user/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ProjectController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.ProjectController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProjectController</servlet-name>
+        <url-pattern>/api/projects/*</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>ValidateJWTAccessTokenFilter</filter-name>
         <filter-class>com.example.colabplatform.filters.ValidateJWTAccessTokenFilter</filter-class>

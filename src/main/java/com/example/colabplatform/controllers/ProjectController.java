@@ -20,6 +20,7 @@ public class ProjectController extends AbstractController {
             if (requestMapping("/create")) {
                 String name = req.getParameter("name");
                 String userIdString = req.getParameter("userId");
+                logger.info("Creating project " + name + " " + userIdString);
                 Integer userId;
                 try {
                     projectValidator.validateName(name);
@@ -30,7 +31,8 @@ public class ProjectController extends AbstractController {
                     return;
                 }
                 Integer createdId = projectService.create(name, userId);
-                this.responseOut.print(String.format("{ProjectId: %d}", createdId));
+                logger.info("Sent " + String.format("{\"ProjectId\": %d}", createdId));
+                this.responseOut.print(String.format("{\"ProjectId\": %d}", createdId));
             }
             else if (requestMapping("/join")) {
 

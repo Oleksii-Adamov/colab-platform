@@ -8,7 +8,8 @@
     </div>
     <div class="nav-links">
       <a href="/my-projects">Your projects</a>
-      <a href="/create-project">Create project</a>
+<!--      <a href="/create-project">Create project</a>-->
+      <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
       <a @click="logoutMethod()">Logout</a>
     </div>
 <!--    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">-->

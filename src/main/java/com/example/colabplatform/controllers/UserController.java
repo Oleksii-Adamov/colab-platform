@@ -30,8 +30,8 @@ public class UserController extends AbstractController {
                 }
                 try {
                     Integer userId = userService.registerIfNot(keycloakUserId, fullName);
-                    this.responseOut.print(String.format("{\"userId\": %d}", userId));
                     logger.info("Sent " + String.format("{\"userId\": %d}", userId));
+                    this.responseOut.print(String.format("{\"userId\": %d}", userId));
                 } catch (SQLException e) {
                     logger.error(e.getMessage());
                     logger.error("Error in login/registration of user " + keycloakUserId);
@@ -40,11 +40,11 @@ public class UserController extends AbstractController {
                 }
             }
             else {
-                logger.info("No such path " + req.getRequestURI());
+                logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             resp.sendError(500, e.getMessage());
         }
         this.responseOut.flush();
