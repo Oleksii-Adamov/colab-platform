@@ -30,8 +30,9 @@ public class UserController extends AbstractController {
                 }
                 try {
                     Integer userId = userService.registerIfNot(keycloakUserId, fullName);
-                    logger.info("Sent " + String.format("{\"userId\": %d}", userId));
-                    this.responseOut.print(String.format("{\"userId\": %d}", userId));
+                    String jsonResponse = String.format("{\"userId\": %d}", userId);
+                    this.responseOut.print(jsonResponse);
+                    logger.info("response from " + req.getRequestURI() + " " + jsonResponse);
                 } catch (SQLException e) {
                     logger.error(e.getMessage());
                     logger.error("Error in login/registration of user " + keycloakUserId);

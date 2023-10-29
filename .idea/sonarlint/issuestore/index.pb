@@ -32,8 +32,6 @@ _
 Osrc/main/java/com/example/colabplatform/exceptions/ConnectionPoolException.java,d\4\d42f0ee8b0585d5c144decadc496bc14c8c695c6
 k
 ;src/main/java/com/example/colabplatform/enitities/User.java,9\1\91042eb6262953719620d805d21bdb9e0f4f145b
-k
-;src/main/java/com/example/colabplatform/dao/DAOFactory.java,2\4\24c4b8aff44e37aede7c177e2eacd84050b19e6f
 ~
 Nsrc/main/java/com/example/colabplatform/exceptions/UserValidatorException.java,f\d\fd930cf4ef41a9b501be6ff28b322a9e9de2f527
 7

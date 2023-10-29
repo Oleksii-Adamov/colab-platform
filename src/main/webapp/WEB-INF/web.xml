@@ -20,12 +20,28 @@
         <url-pattern>/api/user/*</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>ProjectController</servlet-name>
-        <servlet-class>com.example.colabplatform.controllers.ProjectController</servlet-class>
+        <servlet-name>ProjectsController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.ProjectsController</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ProjectController</servlet-name>
+        <servlet-name>ProjectsController</servlet-name>
         <url-pattern>/api/projects/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>TagsController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.TagsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TagsController</servlet-name>
+        <url-pattern>/api/tags/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SkillsController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.SkillsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SkillsController</servlet-name>
+        <url-pattern>/api/skills/*</url-pattern>
     </servlet-mapping>
     <filter>
         <filter-name>ValidateJWTAccessTokenFilter</filter-name>

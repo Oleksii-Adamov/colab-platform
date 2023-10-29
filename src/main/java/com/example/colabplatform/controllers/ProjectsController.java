@@ -7,11 +7,9 @@ import com.example.colabplatform.validators.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
-public class ProjectController extends AbstractController {
+public class ProjectsController extends AbstractController {
     private static final ProjectService projectService = new ProjectService();
     private static final ProjectValidator projectValidator = new ProjectValidator();
     private static final UserValidator userValidator = new UserValidator();
@@ -47,8 +45,9 @@ public class ProjectController extends AbstractController {
                     return;
                 }
                 Integer createdId = projectService.create(name, userId);
-                logger.info("Sent " + String.format("{\"ProjectId\": %d}", createdId));
-                this.responseOut.print(String.format("{\"ProjectId\": %d}", createdId));
+                String jsonResponse = String.format("{\"ProjectId\": %d}", createdId);
+                this.responseOut.print(jsonResponse);
+                logger.info("response from " + req.getRequestURI() + " " + jsonResponse);
             }
             else if (requestMapping("/join")) {
 
