@@ -1,12 +1,15 @@
 import {whenTokenNotUndefined} from "@/authUtils";
 import axios from "axios";
 
-export default function postRequest(url, action = null) {
+export default function postRequest(url, data = {}, action = null) {
+    data = JSON.stringify(data)
+    console.log(data)
     whenTokenNotUndefined().then( () => {
         axios({
             method: 'post',
             url: url,
-            headers: {'Authorization': "Bearer " + localStorage.getItem('user-token')}
+            headers: {'Authorization': "Bearer " + localStorage.getItem('user-token'),
+            data: data}
         }).then((response) => {console.log(response);  if (action !== null) {action(response);}}).catch((error) => {
             if (error.response) {
                 // The request was made and the server responded with a status code

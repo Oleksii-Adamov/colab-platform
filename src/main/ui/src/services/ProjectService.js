@@ -14,5 +14,5 @@ export async function getProjectContributions(projectId) {
 }
 
 export async function createProject(projectName, action) {
-    return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'), action);
+    return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'), {'projectName': projectName, 'userId': localStorage.getItem('userId')}, action);
 }

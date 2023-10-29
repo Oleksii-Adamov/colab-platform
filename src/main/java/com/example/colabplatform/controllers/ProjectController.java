@@ -7,7 +7,9 @@ import com.example.colabplatform.validators.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class ProjectController extends AbstractController {
     private static final ProjectService projectService = new ProjectService();
@@ -20,7 +22,21 @@ public class ProjectController extends AbstractController {
             if (requestMapping("/create")) {
                 String name = req.getParameter("name");
                 String userIdString = req.getParameter("userId");
+                //String requestData = req.getReader().lines().collect(Collectors.joining());
+//                StringBuilder sb = new StringBuilder();
+//                BufferedReader reader = req.getReader();
+//                try {
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        sb.append(line).append('\n');
+//                    }
+//                } finally {
+//                    reader.close();
+//                }
+//                String requestData = sb.toString();
+                String requestData = req.getHeader("data");
                 logger.info("Creating project " + name + " " + userIdString);
+                logger.info(requestData);
                 Integer userId;
                 try {
                     projectValidator.validateName(name);
@@ -38,7 +54,7 @@ public class ProjectController extends AbstractController {
 
             }
             else {
-                logger.info("No such path " + req.getRequestURI());
+                logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());
             }
         } catch (Exception e) {

@@ -38,9 +38,3 @@ k
 Nsrc/main/java/com/example/colabplatform/exceptions/UserValidatorException.java,f\d\fd930cf4ef41a9b501be6ff28b322a9e9de2f527
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
-{
-Ksrc/main/java/com/example/colabplatform/controllers/AbstractController.java,d\1\d1760a935d3189ac3d9485436b5a38a655fccbf2
-}
-Msrc/main/java/com/example/colabplatform/filters/UserIdentificationFilter.java,7\4\74c0929f958b0029fed357afe7a1fec9ef43f742
-Å
-Qsrc/main/java/com/example/colabplatform/filters/ValidateJWTAccessTokenFilter.java,7\9\7912ae18f3bae071e07f157ae8b540a3ecb19462
