@@ -32,7 +32,7 @@
               <div class="checkbox-wrapper-1">
                 <label class="form-label"><h2>Desired skills</h2></label>
                 <div v-for="skill in skills" :key="skill.id">
-                  <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedTags" :value="skill.id"/>
+                  <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedSkills" :value="skill.id"/>
                   <label style="display: inline-block;">{{skill.name}}</label>
                 </div>
               </div>
@@ -69,7 +69,7 @@ export default {
   methods: {
     submitCreateProject() {
       if (this.projectName !== "") {
-        createProject(this.projectName, () => {
+        createProject(this.projectName, this.projectDescription, this.selectedTags, this.selectedSkills, () => {
           this.$router.push({path: '/my-projects'});
         });
       } else {
@@ -83,7 +83,7 @@ export default {
         })
         getSkills().then(response => {
           console.log(response)
-          this.in_projects = response
+          this.skills = response
         })
       }
     },

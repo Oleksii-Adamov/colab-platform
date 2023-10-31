@@ -82,3 +82,27 @@ l
 <src/main/java/com/example/colabplatform/enitities/Skill.java,7\c\7c0be37f8cfd9b736b5bec4520263975a6612df9
 U
 %src/main/ui/src/pages/LandingPage.vue,4\a\4a06167bb519f8f6bfe330a3720db98116056182
+y
+Isrc/main/java/com/example/colabplatform/controllers/SkillsController.java,9\b\9b58eeba1181e47a12cc3149846a99de0a47e540
+w
+Gsrc/main/java/com/example/colabplatform/controllers/TagsController.java,a\3\a3801b19583ab347d1899e5d26add94b95660b73
+O
+src/main/webapp/WEB-INF/web.xml,2\e\2e22b6edd746fa3dc40ad7276c87c8d87d72a392
+V
+&src/main/ui/src/services/tagService.js,d\6\d6285a3cf63b84fd92e1f249d5f0cc83aa2717ce
+w
+Gsrc/main/java/com/example/colabplatform/controllers/UserController.java,6\6\661f0fe7441ee8729c22fbf3ad1b2f833ec41366
+w
+Gsrc/main/java/com/example/colabplatform/controllers/TestController.java,9\b\9be4e58feb99dd81986479237a4490882304131a
+k
+;src/main/java/com/example/colabplatform/dao/DAOFactory.java,2\4\24c4b8aff44e37aede7c177e2eacd84050b19e6f
+x
+Hsrc/main/java/com/example/colabplatform/validators/ProjectValidator.java,4\6\466dabaaba2b76abbada6309ad86000926b8edf4
+u
+Esrc/main/java/com/example/colabplatform/validators/UserValidator.java,b\2\b2a77c35d5ffd177a05c7904a8b9c4581335ba41
+q
+Asrc/main/java/com/example/colabplatform/services/UserService.java,d\0\d0035163f3648366fa4828322fa0df36da311ac7
+X
+(src/main/ui/src/services/skillService.js,a\2\a2546dd211fb33949c0614c88fea40227617452b
+t
+Dsrc/main/java/com/example/colabplatform/database/ConnectionPool.java,f\9\f93e24688be0abaa6ec08c076c10eeb045d0e7f3

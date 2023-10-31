@@ -13,6 +13,8 @@ export async function getProjectContributions(projectId) {
     return getRequest('/api/projects/contributions?projectId='+projectId);
 }
 
-export async function createProject(projectName, action) {
-    return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'), {'projectName': projectName, 'userId': localStorage.getItem('userId')}, action);
+export async function createProject(projectName, projectDescription, selectedTags, selectedSkills, action) {
+    return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'),
+        {'projectDescription': projectDescription, 'selectedTags': selectedTags,
+        'selectedSkills': selectedSkills}, action);
 }
