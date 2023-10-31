@@ -10,6 +10,7 @@ public class ConnectionFactory {
     public static final ConnectionFactory factory = new ConnectionFactory();
     private final ConnectionPool connectionPool;
     private static final int MAX_CONNECTIONS = 10;
+    private final ThreadLocal<Connection> threadLocalConnection = new ThreadLocal<>();
     private ConnectionFactory() {
         this.connectionPool = new ConnectionPool(MAX_CONNECTIONS);
     }
@@ -19,17 +20,16 @@ public class ConnectionFactory {
     }
 
     public synchronized Connection getConnection() throws ConnectionPoolException {
-        return connectionPool.getConnection();
-        //        if(threadLocalTransactionConnection.get()!=null){
-//            return threadLocalTransactionConnection.get();
-//        }
-//        Connection con = connectionFactory.getConnection();
-//        con.setAutoCommit(false);
-//        return new TransactionConnection(con);
+//        return connectionPool.getConnection();
+        if(threadLocalConnection.get()==null){
+            threadLocalConnection.set(connectionPool.getConnection());
+        }
+        return threadLocalConnection.get();
     }
 
-    public void releaseConnection(Connection connection) throws SQLException, ConnectionPoolException {
-        connectionPool.releaseConnection(connection);
+    public void releaseConnection() throws SQLException, ConnectionPoolException {
+        connectionPool.releaseConnection(threadLocalConnection.get());
+        threadLocalConnection.set(null);
     }
 
 }

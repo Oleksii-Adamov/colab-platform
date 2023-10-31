@@ -23,6 +23,7 @@ public class ProjectDAOImpl implements ProjectDAO {
         preparedStatement.setInt(2, project.getCreatorUserID());
         preparedStatement.execute();
         ResultSet rs = preparedStatement.getGeneratedKeys();
+        ConnectionFactory.instance().releaseConnection();
         if (rs.next()) {
             return rs.getInt(1);
         }
@@ -36,6 +37,7 @@ public class ProjectDAOImpl implements ProjectDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT pr.ProjectID, pr.ProjectName FROM Projects pr");
         ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
         return projectsFromResultSet(rs);
     }
 

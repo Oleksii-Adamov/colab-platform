@@ -22,19 +22,19 @@
             <fieldset class="form-group">
               <div class="checkbox-wrapper-1">
                 <label class="form-label"><h2>Project tags</h2></label>
-                <input id="example-1" class="substituted" type="checkbox" aria-hidden="true" />
-                <label for="example-1">Checkbox1</label>
-                <input id="example-2" class="substituted" type="checkbox" aria-hidden="true" />
-                <label for="example-2">Checkbox2</label>
+                <div v-for="tag in tags" :key="tag.id">
+                <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedTags" :value="tag.id"/>
+                  <label style="display: inline-block;">{{tag.name}}</label>
+                </div>
               </div>
             </fieldset>
             <fieldset class="form-group">
               <div class="checkbox-wrapper-1">
                 <label class="form-label"><h2>Desired skills</h2></label>
-                <input id="example-1" class="substituted" type="checkbox" aria-hidden="true" />
-                <label for="example-1">Checkbox1</label>
-                <input id="example-2" class="substituted" type="checkbox" aria-hidden="true" />
-                <label for="example-2">Checkbox2</label>
+                <div v-for="skill in skills" :key="skill.id">
+                  <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedTags" :value="skill.id"/>
+                  <label style="display: inline-block;">{{skill.name}}</label>
+                </div>
               </div>
             </fieldset>
           </div>
@@ -51,13 +51,19 @@
 
 <script>
 import {createProject} from "@/services/ProjectService";
+import {getTags} from "@/services/tagService";
+import {getSkills} from "@/services/skillService";
 
 export default {
   name: "CreateCoursePage",
   data() {
     return {
       projectName: "",
-      projectDescription: ""
+      projectDescription: "",
+      tags: [],
+      selectedTags: [],
+      skills: [],
+      selectedSkills: []
     }
   },
   methods: {
@@ -69,7 +75,20 @@ export default {
       } else {
         alert("All field must be field");
       }
-    }
+      },
+      getPossibleTagsAndSkills() {
+        getTags().then(response => {
+          console.log(response)
+          this.tags = response
+        })
+        getSkills().then(response => {
+          console.log(response)
+          this.in_projects = response
+        })
+      }
+    },
+  mounted() {
+    this.getPossibleTagsAndSkills();
   }
 }
 </script>

@@ -17,6 +17,7 @@ public class TagDAOImpl implements TagDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT tg.TAGID, tg.TAGNAME FROM TAGS tg");
         ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
         return tagsFromResultSet(rs);
     }
     private List<Tag> tagsFromResultSet(ResultSet rs) throws SQLException {

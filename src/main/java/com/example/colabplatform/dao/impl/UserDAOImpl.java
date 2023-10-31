@@ -19,6 +19,7 @@ public class UserDAOImpl implements UserDAO {
         preparedStatement.setString(1, user.getFullName());
         preparedStatement.setString(2, user.getKeycloakId());
         preparedStatement.execute();
+        ConnectionFactory.instance().releaseConnection();
         ResultSet rs = preparedStatement.getGeneratedKeys();
         if (rs.next()) {
             return rs.getInt(1);

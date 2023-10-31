@@ -37,7 +37,7 @@ public class ConnectionPool {
         }
     }
 
-    public Connection getConnection() throws ConnectionPoolException {
+    public synchronized Connection getConnection() throws ConnectionPoolException {
         try {
             return connections.take();
         } catch (InterruptedException e) {

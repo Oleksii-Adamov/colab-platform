@@ -17,6 +17,7 @@ public class SkillDAOImpl implements SkillDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT sk.SKILLID, sk.SKILLNAME FROM SKILLS sk");
         ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
         return skillsFromResultSet(rs);
     }
     private List<Skill> skillsFromResultSet(ResultSet rs) throws SQLException {
