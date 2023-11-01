@@ -70,8 +70,6 @@ Qsrc/main/java/com/example/colabplatform/filters/ValidateJWTAccessTokenFilter.ja
 Msrc/main/java/com/example/colabplatform/filters/UserIdentificationFilter.java,7\4\74c0929f958b0029fed357afe7a1fec9ef43f742
 {
 Ksrc/main/java/com/example/colabplatform/controllers/AbstractController.java,d\1\d1760a935d3189ac3d9485436b5a38a655fccbf2
-n
->src/main/java/com/example/colabplatform/enitities/Project.java,5\7\573a56d8f23b21ea4cc7453e2773a80a2b0d0180
 h
 8src/main/java/com/example/colabplatform/dao/UserDAO.java,7\f\7f6c28d8195a47de58f425174c4172d1d0816631
 i
@@ -106,3 +104,9 @@ X
 (src/main/ui/src/services/skillService.js,a\2\a2546dd211fb33949c0614c88fea40227617452b
 t
 Dsrc/main/java/com/example/colabplatform/database/ConnectionPool.java,f\9\f93e24688be0abaa6ec08c076c10eeb045d0e7f3
+w
+Gsrc/main/java/com/example/colabplatform/database/ConnectionFactory.java,b\c\bce66cad3089ee1b424105bc2b49e439b0c7b996
+q
+Asrc/main/java/com/example/colabplatform/dao/impl/UserDAOImpl.java,9\2\923133e50cbe6b1fe4777bd501e6850fd03afc36
+r
+Bsrc/main/java/com/example/colabplatform/dao/impl/SkillDAOImpl.java,e\8\e825baf4e170100509319262b18a47d8c8cb5a1f

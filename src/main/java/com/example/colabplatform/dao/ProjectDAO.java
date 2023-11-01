@@ -6,6 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ProjectDAO {
-    Integer create(Project project) throws SQLException;
+    Integer create(Project project, List<Integer> tagsIds, List<Integer> skillsIds) throws SQLException;
     List<Project> getProjects() throws SQLException;
 }

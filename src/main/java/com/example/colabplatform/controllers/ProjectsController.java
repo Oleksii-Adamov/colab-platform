@@ -52,7 +52,7 @@ public class ProjectsController extends AbstractController {
                     resp.sendError(400, e.getMessage());
                     return;
                 }
-                Integer createdId = projectService.create(name, userId);
+                Integer createdId = projectService.create(name, userId, projectDescription, tagsIds, skillsIds);
                 String jsonResponse = String.format("{\"ProjectId\": %d}", createdId);
                 this.responseOut.print(jsonResponse);
                 logger.info("response from " + req.getRequestURI() + " " + jsonResponse);

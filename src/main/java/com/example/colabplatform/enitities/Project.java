@@ -1,12 +1,18 @@
 package com.example.colabplatform.enitities;
 
+import java.util.List;
+
 public class Project implements Entity {
 
     private Integer id;
     private String name;
-
     private Integer creatorUserID;
 
+    private String description;
+
+    private List<Tag> tags;
+
+    private List<Skill> skills;
 
     public Project() {
     }
@@ -14,6 +20,12 @@ public class Project implements Entity {
     public Project(String name, Integer creatorUserID) {
         this.name = name;
         this.creatorUserID = creatorUserID;
+    }
+
+    public Project(String name, Integer creatorUserID, String description) {
+        this.name = name;
+        this.creatorUserID = creatorUserID;
+        this.description = description;
     }
 
     public int getId() {
@@ -38,5 +50,29 @@ public class Project implements Entity {
 
     public void setCreatorUserID(Integer creatorUserID) {
         this.creatorUserID = creatorUserID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
     }
 }

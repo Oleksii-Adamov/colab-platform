@@ -8,28 +8,46 @@ import com.example.colabplatform.exceptions.ProjectDAOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectDAOImpl implements ProjectDAO {
     @Override
-    public Integer create(Project project) throws SQLException {
+    public Integer create(Project project, List<Integer> tagsIds, List<Integer> skillsIds) throws SQLException {
         String[] returnCols = { "PROJECTID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
-                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, PROJECTDESCRIPTION, CREATORUSERID) VALUES(?, null, ?)",
+                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, PROJECTDESCRIPTION, CREATORUSERID) VALUES(?, ?, ?)",
                         returnCols);
         preparedStatement.setString(1, project.getName());
-        preparedStatement.setInt(2, project.getCreatorUserID());
+        preparedStatement.setString(2, project.getDescription());
+        preparedStatement.setInt(3, project.getCreatorUserID());
         preparedStatement.execute();
         ResultSet rs = preparedStatement.getGeneratedKeys();
-        ConnectionFactory.instance().releaseConnection();
+        int projectId;
         if (rs.next()) {
-            return rs.getInt(1);
+            projectId = rs.getInt(1);
         }
         else {
             throw new ProjectDAOException("Didn't get created project id");
         }
+        preparedStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("INSERT INTO PROJECTTAGSASSIGNMENTS (PROJECTID, TAGID) VALUES(?, ?)");
+        for (int tagId : tagsIds) {
+            preparedStatement.setInt(1, projectId);
+            preparedStatement.setInt(2, tagId);
+            preparedStatement.addBatch();
+        }
+        preparedStatement.executeBatch();
+        preparedStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("INSERT INTO PROJECTSKILLASSIGNMENTS (PROJECTID, SKILLID) VALUES(?, ?)");
+        for (int skillId : skillsIds) {
+            preparedStatement.setInt(1, projectId);
+            preparedStatement.setInt(2, skillId);
+            preparedStatement.addBatch();
+        }
+        preparedStatement.executeBatch();
+        ConnectionFactory.instance().releaseConnection();
+        return projectId;
     }
 
     @Override
