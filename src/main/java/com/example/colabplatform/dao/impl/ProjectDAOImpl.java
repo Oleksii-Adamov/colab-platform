@@ -62,6 +62,16 @@ public class ProjectDAOImpl implements ProjectDAO {
         return projectsFromResultSet(rs);
     }
 
+    @Override
+    public List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT pr.ProjectID, pr.ProjectName FROM Projects pr WHERE pr.CREATORUSERID = ?");
+        preparedStatement.setInt(1, userId);
+        ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
+        return projectsFromResultSet(rs);
+    }
+
     private List<Project> projectsFromResultSet(ResultSet rs) throws SQLException {
         List<Project> projects = new ArrayList<>();
         while (rs.next()) {

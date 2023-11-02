@@ -44,12 +44,8 @@ r
 Bsrc/main/java/com/example/colabplatform/security/JwtValidator.java,7\e\7ed219df6caf1345e90397dc2530a339c630708c
 G
 src/main/ui/src/main.js,6\c\6c2ad86addcd08dad608c2a56636270316bf6fcd
-]
--src/main/ui/src/components/UserNavigation.vue,4\a\4a9ca78a305e3b9209cf8a96477b01ef13391e0a
 L
 src/main/ui/src/authUtils.js,d\5\d50ccb1f12ff56693566f52f37d5b93a4114f326
-I
-src/main/ui/src/routes.js,a\6\a651b505b6ccb22ad866f49abbbab27d0542531f
 V
 &src/main/ui/src/services/getRequest.js,2\4\242c726f9744a5680bb4b2393cd045c895288536
 W
@@ -78,8 +74,6 @@ g
 7src/main/java/com/example/colabplatform/dao/TagDAO.java,9\b\9b09041135db1f311316af8b94fa6679ba5fb257
 l
 <src/main/java/com/example/colabplatform/enitities/Skill.java,7\c\7c0be37f8cfd9b736b5bec4520263975a6612df9
-U
-%src/main/ui/src/pages/LandingPage.vue,4\a\4a06167bb519f8f6bfe330a3720db98116056182
 y
 Isrc/main/java/com/example/colabplatform/controllers/SkillsController.java,9\b\9b58eeba1181e47a12cc3149846a99de0a47e540
 w
@@ -90,14 +84,8 @@ V
 &src/main/ui/src/services/tagService.js,d\6\d6285a3cf63b84fd92e1f249d5f0cc83aa2717ce
 w
 Gsrc/main/java/com/example/colabplatform/controllers/UserController.java,6\6\661f0fe7441ee8729c22fbf3ad1b2f833ec41366
-w
-Gsrc/main/java/com/example/colabplatform/controllers/TestController.java,9\b\9be4e58feb99dd81986479237a4490882304131a
 k
 ;src/main/java/com/example/colabplatform/dao/DAOFactory.java,2\4\24c4b8aff44e37aede7c177e2eacd84050b19e6f
-x
-Hsrc/main/java/com/example/colabplatform/validators/ProjectValidator.java,4\6\466dabaaba2b76abbada6309ad86000926b8edf4
-u
-Esrc/main/java/com/example/colabplatform/validators/UserValidator.java,b\2\b2a77c35d5ffd177a05c7904a8b9c4581335ba41
 q
 Asrc/main/java/com/example/colabplatform/services/UserService.java,d\0\d0035163f3648366fa4828322fa0df36da311ac7
 X
@@ -114,5 +102,3 @@ p
 @src/main/java/com/example/colabplatform/dao/impl/TagDAOImpl.java,9\c\9cb899854f4621e644c682ab0a46e3488f27661b
 j
 :src/main/java/com/example/colabplatform/enitities/Tag.java,0\f\0fb1aef9d515fabb167eeb1f780fc67af5fc2442
-X
-(src/main/ui/src/pages/MyProjectsPage.vue,3\a\3af8fc1b961e7f16e1a1a0b75128641ac371ae77

@@ -7,8 +7,7 @@
       </div>
     </div>
     <div class="nav-links">
-      <a href="/my-projects">Your projects</a>
-<!--      <a href="/create-project">Create project</a>-->
+      <router-link :to="{ name: 'my-projects-page'}">Your projects</router-link>
       <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
       <a @click="logoutMethod()">Logout</a>
     </div>

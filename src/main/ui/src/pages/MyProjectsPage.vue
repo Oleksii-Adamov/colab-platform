@@ -32,19 +32,19 @@ export default {
     }
   },
   methods: {
-    getTeacherCourses() {
+    getProjects() {
       getUsersProjects().then(response => {
         console.log(response)
         this.your_projects = response
-      })
+      });
       getProjectsThatUserIn().then(response => {
         console.log(response)
         this.in_projects = response
-      })
+      });
     },
   },
   mounted() {
-    this.getTeacherCourses();
+    this.getProjects();
   }
 }
 </script>

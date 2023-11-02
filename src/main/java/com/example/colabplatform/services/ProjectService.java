@@ -13,4 +13,8 @@ public class ProjectService {
                 tagsIds, skillsIds);
     }
 
+    public List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException {
+        return DAOFactory.getInstance().getProjectDAO().getProjectsCreatedByUser(userId);
+    }
+
 }

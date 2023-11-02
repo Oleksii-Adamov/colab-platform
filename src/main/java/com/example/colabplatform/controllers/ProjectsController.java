@@ -1,9 +1,13 @@
 package com.example.colabplatform.controllers;
 
+import com.example.colabplatform.dao.DAOFactory;
+import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.exceptions.ProjectValidatorException;
+import com.example.colabplatform.exceptions.UserValidatorException;
 import com.example.colabplatform.services.ProjectService;
 import com.example.colabplatform.validators.ProjectValidator;
 import com.example.colabplatform.validators.UserValidator;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,15 +47,8 @@ public class ProjectsController extends AbstractController {
                 logger.info(projectDescription);
                 logger.info(tagsIds);
                 logger.info(skillsIds);
-                Integer userId;
-                try {
-                    projectValidator.validateName(name);
-                    userId = userValidator.getValidatedUserId(userIdString);
-                }  catch (ProjectValidatorException e) {
-                    logger.info(e.getMessage());
-                    resp.sendError(400, e.getMessage());
-                    return;
-                }
+                projectValidator.validateName(name);
+                Integer userId = userValidator.getValidatedUserId(userIdString);
                 Integer createdId = projectService.create(name, userId, projectDescription, tagsIds, skillsIds);
                 String jsonResponse = String.format("{\"ProjectId\": %d}", createdId);
                 this.responseOut.print(jsonResponse);
@@ -64,8 +61,38 @@ public class ProjectsController extends AbstractController {
                 logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());
             }
-        } catch (Exception e) {
+        }
+        catch (ProjectValidatorException | UserValidatorException e) {
+            logger.info(e.getMessage());
+            resp.sendError(400, e.getMessage());
+            return;
+        }
+        catch (Exception e) {
             logger.error(e.getMessage());
+            resp.sendError(500, e.getMessage());
+        }
+        this.responseOut.flush();
+    }
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            processRequest(req, resp);
+            String jsonResponse = "";
+            if (requestMapping("/user-projects")) {
+                String userIdString = req.getParameter("userId");
+                Integer userId = userValidator.getValidatedUserId(userIdString);
+                List<Project> projects = projectService.getProjectsCreatedByUser(userId);
+                jsonResponse = new Gson().toJson(projects);
+                this.responseOut.print(jsonResponse);
+            }
+        }
+        catch (UserValidatorException e) {
+            logger.info(e.getMessage());
+            resp.sendError(400, e.getMessage());
+            return;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
             resp.sendError(500, e.getMessage());
         }
         this.responseOut.flush();

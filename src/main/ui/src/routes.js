@@ -17,7 +17,8 @@ export default [
     },
     {
         path: '/my-projects',
-        component: MyProjectsPage
+        component: MyProjectsPage,
+        name: 'my-projects-page'
     },
     {
         path: '/projects/:id',

@@ -2,7 +2,7 @@ import getRequest from "@/services/getRequest";
 import postRequest from "@/services/postRequest";
 
 export async function getUsersProjects() {
-    return getRequest('/api/projects/user-projects');
+    return getRequest('/api/projects/user-projects?userId=' + localStorage.getItem('userId'));
 }
 
 export async function getProjectsThatUserIn() {
