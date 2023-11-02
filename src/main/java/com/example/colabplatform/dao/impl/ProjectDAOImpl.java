@@ -8,6 +8,7 @@ import com.example.colabplatform.exceptions.ProjectDAOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +17,13 @@ public class ProjectDAOImpl implements ProjectDAO {
     public Integer create(Project project, List<Integer> tagsIds, List<Integer> skillsIds) throws SQLException {
         String[] returnCols = { "PROJECTID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
-                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, PROJECTDESCRIPTION, CREATORUSERID) VALUES(?, ?, ?)",
+                .prepareStatement("INSERT INTO PROJECTS (PROJECTNAME, PROJECTDESCRIPTION, CREATORUSERID, CREATIONTIMESTAMP)" +
+                                " VALUES(?, ?, ?, ?)",
                         returnCols);
         preparedStatement.setString(1, project.getName());
         preparedStatement.setString(2, project.getDescription());
         preparedStatement.setInt(3, project.getCreatorUserID());
+        preparedStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
         preparedStatement.execute();
         ResultSet rs = preparedStatement.getGeneratedKeys();
         int projectId;

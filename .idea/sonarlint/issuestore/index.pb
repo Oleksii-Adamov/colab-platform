@@ -110,3 +110,9 @@ q
 Asrc/main/java/com/example/colabplatform/dao/impl/UserDAOImpl.java,9\2\923133e50cbe6b1fe4777bd501e6850fd03afc36
 r
 Bsrc/main/java/com/example/colabplatform/dao/impl/SkillDAOImpl.java,e\8\e825baf4e170100509319262b18a47d8c8cb5a1f
+p
+@src/main/java/com/example/colabplatform/dao/impl/TagDAOImpl.java,9\c\9cb899854f4621e644c682ab0a46e3488f27661b
+j
+:src/main/java/com/example/colabplatform/enitities/Tag.java,0\f\0fb1aef9d515fabb167eeb1f780fc67af5fc2442
+X
+(src/main/ui/src/pages/MyProjectsPage.vue,3\a\3af8fc1b961e7f16e1a1a0b75128641ac371ae77
