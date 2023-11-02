@@ -24,6 +24,7 @@ public abstract class AbstractController extends HttpServlet {
         this.responseOut = resp.getWriter();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
+        logger.info("request to " + req.getPathInfo());
     }
 
     protected boolean requestMapping(String regex) {

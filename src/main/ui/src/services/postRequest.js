@@ -2,8 +2,8 @@ import {whenTokenNotUndefined} from "@/authUtils";
 import axios from "axios";
 
 export default function postRequest(url, data = {}, action = null) {
+    console.log("postRequest to ", url);
     data = JSON.stringify(data)
-    console.log(data)
     whenTokenNotUndefined().then( () => {
         axios({
             method: 'post',

@@ -10,4 +10,6 @@ public interface ProjectDAO {
     List<Project> getProjects() throws SQLException;
 
     List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException;
+
+    Project getProjectInfo(Integer projectId) throws SQLException;
 }

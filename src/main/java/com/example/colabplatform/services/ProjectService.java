@@ -17,4 +17,7 @@ public class ProjectService {
         return DAOFactory.getInstance().getProjectDAO().getProjectsCreatedByUser(userId);
     }
 
+    public Project getProjectInfo(Integer projectId) throws SQLException {
+        return DAOFactory.getInstance().getProjectDAO().getProjectInfo(projectId);
+    }
 }

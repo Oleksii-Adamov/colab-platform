@@ -9,6 +9,10 @@ export async function getProjectsThatUserIn() {
     return getRequest('/api/projects/projects-user-in');
 }
 
+export async function getProjectInfo(projectId) {
+    return getRequest('/api/projects/project-info?projectId='+projectId);
+}
+
 export async function getProjectContributions(projectId) {
     return getRequest('/api/projects/contributions?projectId='+projectId);
 }

@@ -3,6 +3,8 @@ package com.example.colabplatform.dao.impl;
 import com.example.colabplatform.dao.ProjectDAO;
 import com.example.colabplatform.database.ConnectionFactory;
 import com.example.colabplatform.enitities.Project;
+import com.example.colabplatform.enitities.Skill;
+import com.example.colabplatform.enitities.Tag;
 import com.example.colabplatform.exceptions.ProjectDAOException;
 
 import java.sql.PreparedStatement;
@@ -81,5 +83,47 @@ public class ProjectDAOImpl implements ProjectDAO {
             projects.add(project);
         }
         return projects;
+    }
+
+    public Project getProjectInfo(Integer projectId) throws SQLException {
+        Project project = new Project();
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT P.ProjectName, P.PROJECTDESCRIPTION" +
+                        " FROM Projects P" +
+                        " WHERE P.PROJECTID = ?");
+        preparedStatement.setInt(1, projectId);
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            project.setName(rs.getString("ProjectName"));
+            project.setDescription(rs.getString("PROJECTDESCRIPTION"));
+        }
+
+        preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT T.TAGID, T.TAGNAME" +
+                        " FROM Projects P" +
+                        " INNER JOIN PROJECTTAGSASSIGNMENTS PT on P.PROJECTID = PT.PROJECTID" +
+                        " INNER JOIN TAGS T on PT.TAGID = T.TAGID" +
+                        " WHERE P.PROJECTID = ?");
+        preparedStatement.setInt(1, projectId);
+        rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            project.getTags().add(new Tag(rs.getInt("TAGID"),rs.getString("TAGNAME")));
+        }
+        if (project.getName() == null) return null;
+
+        preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT S.SKILLID, S.SKILLNAME" +
+                        " FROM Projects P" +
+                        " INNER JOIN PROJECTSKILLASSIGNMENTS PS on P.PROJECTID = PS.PROJECTID" +
+                        " INNER JOIN SKILLS S on S.SKILLID = PS.SKILLID" +
+                        " WHERE P.PROJECTID = ?");
+        preparedStatement.setInt(1, projectId);
+        rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            project.getSkills().add(new Skill(rs.getInt("SKILLID"), rs.getString("SKILLNAME")));
+        }
+
+        ConnectionFactory.instance().releaseConnection();
+        return project;
     }
 }

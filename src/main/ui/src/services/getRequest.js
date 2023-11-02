@@ -1,6 +1,7 @@
 import {authorizationHeaders} from "@/authUtils";
 
 export default async function getRequest(url) {
+    console.log("getRequest to ", url);
     const response = await fetch(url, {method: 'GET', headers: await authorizationHeaders()});
     if (response.status === 200) {
         let respJson = response.json();

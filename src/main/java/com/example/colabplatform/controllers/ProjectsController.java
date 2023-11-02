@@ -85,14 +85,33 @@ public class ProjectsController extends AbstractController {
                 jsonResponse = new Gson().toJson(projects);
                 this.responseOut.print(jsonResponse);
             }
+            else if (requestMapping("/project-info")) {
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                Project project = projectService.getProjectInfo(projectId);
+                if (project != null) {
+                    jsonResponse = new Gson().toJson(project);
+                    this.responseOut.print(jsonResponse);
+                }
+                else {
+                    String errorMsg = "No project with such id";
+                    logger.error(errorMsg);
+                    resp.sendError(500, errorMsg);
+                }
+            }
+            else {
+                logger.warn("No such path " + req.getRequestURI());
+                resp.sendError(404, "No such path " + req.getRequestURI());
+            }
+            logger.info("response from " + req.getRequestURI() + " " + jsonResponse);
         }
-        catch (UserValidatorException e) {
+        catch (UserValidatorException | ProjectValidatorException e) {
             logger.info(e.getMessage());
             resp.sendError(400, e.getMessage());
             return;
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             resp.sendError(500, e.getMessage());
         }
         this.responseOut.flush();

@@ -1,5 +1,6 @@
 package com.example.colabplatform.enitities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Project implements Entity {
@@ -10,9 +11,9 @@ public class Project implements Entity {
 
     private String description;
 
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
-    private List<Skill> skills;
+    private List<Skill> skills = new ArrayList<>();
 
     public Project() {
     }
