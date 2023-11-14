@@ -1,6 +1,7 @@
 package com.example.colabplatform.controllers;
 
 import com.example.colabplatform.exceptions.UserValidatorException;
+import com.example.colabplatform.exceptions.ValidationCommonsException;
 import com.example.colabplatform.services.UserService;
 import com.example.colabplatform.validators.UserValidator;
 
@@ -44,7 +45,12 @@ public class UserController extends AbstractController {
                 logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());
             }
-        } catch (Exception e) {
+        }
+        catch (ValidationCommonsException | UserValidatorException e) {
+            logger.info(e.getMessage());
+            resp.sendError(400, e.getMessage());
+        }
+        catch (Exception e) {
             logger.error(e.getMessage());
             resp.sendError(500, e.getMessage());
         }

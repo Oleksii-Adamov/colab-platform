@@ -8,4 +8,6 @@ public interface UserDAO {
     Integer create(User user) throws SQLException;
 
     User getByKeycloakId(String keycloakUserId) throws SQLException;
+
+    String getFullNameById(Integer userId)  throws SQLException;
 }

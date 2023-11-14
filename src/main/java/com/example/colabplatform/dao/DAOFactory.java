@@ -1,9 +1,6 @@
 package com.example.colabplatform.dao;
 
-import com.example.colabplatform.dao.impl.ProjectDAOImpl;
-import com.example.colabplatform.dao.impl.SkillDAOImpl;
-import com.example.colabplatform.dao.impl.TagDAOImpl;
-import com.example.colabplatform.dao.impl.UserDAOImpl;
+import com.example.colabplatform.dao.impl.*;
 
 public class DAOFactory {
     private static final DAOFactory daoFactory = new DAOFactory();
@@ -15,6 +12,10 @@ public class DAOFactory {
 
     private final TagDAO tagDAO = new TagDAOImpl();
     private final SkillDAO skillDAO = new SkillDAOImpl();
+
+    private final ApplicationDAO applicationDAO = new ApplicationDAOImpl();
+
+    private final CollaboratorDAO collaboratorDAO = new CollaboratorDAOImpl();
 
     public static DAOFactory getInstance(){
         return daoFactory;
@@ -33,5 +34,13 @@ public class DAOFactory {
 
     public SkillDAO getSkillDAO() {
         return skillDAO;
+    }
+
+    public ApplicationDAO getApplicationDAO() {
+        return applicationDAO;
+    }
+
+    public CollaboratorDAO getCollaboratorDAO() {
+        return collaboratorDAO;
     }
 }

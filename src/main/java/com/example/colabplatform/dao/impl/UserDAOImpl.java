@@ -48,4 +48,19 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public String getFullNameById(Integer userId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("SELECT u.UserFullName FROM USERS u " +
+                        "WHERE u.UserID = ?");
+        preparedStatement.setInt(1, userId);
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            return rs.getString(1);
+        }
+        else {
+            return null;
+        }
+    }
+
 }

@@ -2,21 +2,12 @@ package com.example.colabplatform.validators;
 
 
 import com.example.colabplatform.exceptions.UserValidatorException;
+import com.example.colabplatform.exceptions.ValidationCommonsException;
 
 public class UserValidator {
 
-    public Integer getValidatedUserId(String userIdStr) throws UserValidatorException {
-        if (userIdStr == null) {
-            throw new UserValidatorException("No parameter userId");
-        }
-        Integer userId;
-        try {
-            userId = Integer.parseInt(userIdStr);
-            if (userId <= 0) throw new UserValidatorException("Parameter userId <= 0");
-        } catch (NumberFormatException e) {
-            throw new UserValidatorException("Non integer parameter userId");
-        }
-        return userId;
+    public Integer getValidatedUserId(String userIdStr) throws ValidationCommonsException {
+        return ValidationCommons.getValidatedPositiveIntegerField(userIdStr, "userId");
     }
     public void validateKeycloakId(String keycloakId) throws UserValidatorException {
         if (keycloakId == null) {
@@ -26,9 +17,7 @@ public class UserValidator {
             throw new UserValidatorException("Invalid parameter keycloakId");
         }
     }
-    public void validateFullName(String fullName) throws UserValidatorException {
-        if (fullName == null) {
-            throw new UserValidatorException("No parameter fullName");
-        }
+    public void validateFullName(String fullName) throws ValidationCommonsException {
+        ValidationCommons.validateNotNullField(fullName, "fullName");
     }
 }

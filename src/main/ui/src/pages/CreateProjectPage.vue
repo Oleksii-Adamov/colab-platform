@@ -233,7 +233,8 @@ body {
   padding-bottom: .8rem;
   width: 97%;
   font-weight:600;
-  color:#8120a1;
+  /*color:#8120a1;*/
+  color:#777;
 }
 
 #form-body {
