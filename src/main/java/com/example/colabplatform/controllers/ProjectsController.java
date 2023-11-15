@@ -109,17 +109,14 @@ public class ProjectsController extends AbstractController {
                 Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
                 Collaborator collaborator = projectService.getCollaborator(userId, projectId);
                 if (collaborator != null) {
-                    Gson gson = new GsonBuilder().setPrettyPrinting()
-                            .excludeFieldsWithoutExposeAnnotation()
-                            .create();
-                    jsonResponse = gson.toJson(collaborator);
-                    //jsonResponse = new Gson().toJson(collaborator);
+                    jsonResponse = new Gson().toJson(collaborator);
                     this.responseOut.print(jsonResponse);
                 }
                 else {
                     String msg = "You are not collaborator";
                     logger.info(msg);
-                    // send nothing
+                    jsonResponse = String.format("{\"msg\": \"%s\"}", msg);
+                    this.responseOut.print(jsonResponse);
                 }
             }
             else {

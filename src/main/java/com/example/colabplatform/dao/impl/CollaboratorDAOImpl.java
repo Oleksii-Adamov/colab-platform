@@ -95,7 +95,10 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
         collaborator.setUserId(rs.getInt(2));
         collaborator.setProjectId(rs.getInt(3));
         collaborator.setAdmin(rs.getInt(4));
-        collaborator.setDateOfJoining(rs.getTimestamp(5).toLocalDateTime().toLocalDate());
+        Timestamp timestamp = rs.getTimestamp(5);
+        collaborator.setDayOfJoining(timestamp.getDay());
+        collaborator.setMonthOfJoining(timestamp.getMonth());
+        collaborator.setYearOfJoining(timestamp.getYear());
         collaborator.setRating(rs.getInt(6));
         return collaborator;
     }

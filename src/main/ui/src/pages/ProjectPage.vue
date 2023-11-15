@@ -66,20 +66,21 @@ export default {
   },
   mounted() {
     console.log("props id ", this.id);
-    getProjectInfo(this.id).then(response => {
-      console.log(response)
-      this.project = response
-    });
-    authToProject(this.id).then(response => {
-      console.log(response)
-      if (response.collaboratorId === undefined) {
+
+    authToProject(this.id).then((response) => {console.log(response)
+      if (response.id === undefined) {
         this.is_collaborator = false
       }
       else {
         this.collaborator = response
         this.is_collaborator = true
       }
-    })
+      getProjectInfo(this.id).then(response => {
+        console.log(response)
+        this.project = response
+      });
+    }
+    )
   }
 }
 </script>

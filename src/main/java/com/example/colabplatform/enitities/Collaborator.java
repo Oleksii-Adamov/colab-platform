@@ -10,7 +10,12 @@ public class Collaborator implements Entity {
     private Integer projectId;
 
     private Boolean isAdmin;
-    private LocalDate dateOfJoining;
+
+    private Integer dayOfJoining;
+
+    private Integer monthOfJoining;
+
+    private Integer yearOfJoining;
     private Integer rating;
 
     public Collaborator() {
@@ -45,12 +50,28 @@ public class Collaborator implements Entity {
         this.projectId = projectId;
     }
 
-    public LocalDate getDateOfJoining() {
-        return dateOfJoining;
+    public Integer getDayOfJoining() {
+        return dayOfJoining;
     }
 
-    public void setDateOfJoining(LocalDate dateOfJoining) {
-        this.dateOfJoining = dateOfJoining;
+    public void setDayOfJoining(Integer dayOfJoining) {
+        this.dayOfJoining = dayOfJoining;
+    }
+
+    public Integer getMonthOfJoining() {
+        return monthOfJoining;
+    }
+
+    public void setMonthOfJoining(Integer monthOfJoining) {
+        this.monthOfJoining = monthOfJoining;
+    }
+
+    public Integer getYearOfJoining() {
+        return yearOfJoining;
+    }
+
+    public void setYearOfJoining(Integer yearOfJoining) {
+        this.yearOfJoining = yearOfJoining;
     }
 
     public Integer getRating() {

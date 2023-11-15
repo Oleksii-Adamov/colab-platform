@@ -21,15 +21,15 @@ export async function getProjectContributions(projectId) {
     return getRequest('/api/projects/contributions?projectId='+projectId);
 }
 
+export async function authToProject(projectId) {
+    return getRequest('/api/projects/auth?userId=' + localStorage.getItem('userId') +
+        '&projectId='+projectId);
+}
+
 export async function createProject(projectName, projectDescription, selectedTags, selectedSkills, action) {
     return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'),
         {'projectDescription': projectDescription, 'selectedTags': selectedTags,
         'selectedSkills': selectedSkills}, action);
-}
-
-export async function authToProject(projectId, action) {
-    return getRequest('/api/projects/auth?userId=' + localStorage.getItem('userId') +
-        '&projectId='+projectId, {}, action);
 }
 
 
