@@ -1,6 +1,7 @@
 package com.example.colabplatform.controllers;
 
 import com.example.colabplatform.dao.DAOFactory;
+import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.exceptions.ProjectValidatorException;
 import com.example.colabplatform.exceptions.UserValidatorException;
@@ -94,6 +95,22 @@ public class ProjectsController extends AbstractController {
                     String errorMsg = "No project with such id";
                     logger.error(errorMsg);
                     resp.sendError(500, errorMsg);
+                }
+            }
+            else if (requestMapping("/auth")) {
+                String userIdString = req.getParameter("userId");
+                Integer userId = userValidator.getValidatedUserId(userIdString);
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                Collaborator collaborator = projectService.getCollaborator(userId, projectId);
+                if (collaborator != null) {
+                    jsonResponse = new Gson().toJson(collaborator);
+                    this.responseOut.print(jsonResponse);
+                }
+                else {
+                    String msg = "You are not collaborator";
+                    logger.info(msg);
+                    resp.sendError(401, msg);
                 }
             }
             else {

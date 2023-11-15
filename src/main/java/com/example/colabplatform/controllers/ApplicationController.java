@@ -1,25 +1,17 @@
 package com.example.colabplatform.controllers;
 
-import com.example.colabplatform.enitities.Application;
-import com.example.colabplatform.enitities.Project;
-import com.example.colabplatform.exceptions.ProjectValidatorException;
 import com.example.colabplatform.exceptions.UserValidatorException;
 import com.example.colabplatform.exceptions.ValidationCommonsException;
 import com.example.colabplatform.infoClasses.ApplicationInfo;
 import com.example.colabplatform.services.ApplicationService;
-import com.example.colabplatform.services.ProjectService;
 import com.example.colabplatform.validators.ApplicationValidator;
 import com.example.colabplatform.validators.ProjectValidator;
 import com.example.colabplatform.validators.UserValidator;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationController extends AbstractController {

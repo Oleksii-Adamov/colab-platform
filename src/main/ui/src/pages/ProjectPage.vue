@@ -1,6 +1,5 @@
 <template>
   <div>
-<!--    <h1>{{this.name}}</h1>-->
     <template v-if="project !== null">
       <h1>{{this.project.name}}</h1>
       <h2>Description</h2>
@@ -33,14 +32,12 @@ export default {
   },
   data() {
     return {
-      // name: "",
       project: null,
       contributions: []
     }
   },
   props:{
     id:{
-      //type: Number,
       type: String,
       required: true,
     }
@@ -51,7 +48,6 @@ export default {
       console.log(response)
       this.project = response
     });
-    // this.name = this.$route.params.name;
   }
 }
 </script>

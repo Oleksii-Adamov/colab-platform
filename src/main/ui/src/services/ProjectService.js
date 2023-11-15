@@ -22,3 +22,10 @@ export async function createProject(projectName, projectDescription, selectedTag
         {'projectDescription': projectDescription, 'selectedTags': selectedTags,
         'selectedSkills': selectedSkills}, action);
 }
+
+export async function authToProject(projectId) {
+    return getRequest('/api/projects/auth?userId=' + localStorage.getItem('userId') +
+        '&projectId='+projectId);
+}
+
+

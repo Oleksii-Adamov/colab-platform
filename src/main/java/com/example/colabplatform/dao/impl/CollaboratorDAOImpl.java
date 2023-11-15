@@ -1,8 +1,11 @@
 package com.example.colabplatform.dao.impl;
 
 import com.example.colabplatform.dao.CollaboratorDAO;
+import com.example.colabplatform.dao.DAOFactory;
 import com.example.colabplatform.database.ConnectionFactory;
+import com.example.colabplatform.enitities.Application;
 import com.example.colabplatform.enitities.Collaborator;
+import com.example.colabplatform.exceptions.ApplicationDAOException;
 import com.example.colabplatform.exceptions.CollaboratorDAOException;
 
 import java.sql.*;
@@ -46,18 +49,54 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
         return collaboratorsFromResultSet(rs);
     }
 
+    @Override
+    public void makeAdmin(Integer collaboratorId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("UPDATE PROJECTCOLLABORATORS SET ISADMIN = ? WHERE COLLABORATORID = ?");
+
+        preparedStatement.setInt(1, 1); // Replace with the status you want
+        preparedStatement.setInt(2, collaboratorId); // Replace with your aApplication ID
+
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if (rowsAffected < 1) {
+            throw new CollaboratorDAOException("Making user admin of project failed");
+        }
+    }
+
+    @Override
+    public Collaborator getByUserAndProjectId(Integer userId, Integer projectId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT c.COLLABORATORID, c.UserID, c.ProjectID, c.ISADMIN, c.DATEOFJOINING, c.RATING" +
+                        " FROM PROJECTCOLLABORATORS c WHERE c.USERID = ? AND c.ProjectID = ?");
+        preparedStatement.setInt(1, userId);
+        preparedStatement.setInt(2, projectId);
+        ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
+        if (rs.next()) {
+            return collaboratorFromResultSet(rs);
+        }
+        else {
+            return null;
+        }
+    }
+
     private List<Collaborator> collaboratorsFromResultSet(ResultSet rs) throws SQLException {
         List<Collaborator> collaborators = new ArrayList<>();
         while (rs.next()) {
-            Collaborator collaborator = new Collaborator();
-            collaborator.setId(rs.getInt(1));
-            collaborator.setUserId(rs.getInt(2));
-            collaborator.setProjectId(rs.getInt(3));
-            collaborator.setAdmin(rs.getInt(4));
-            collaborator.setDateOfJoining(rs.getTimestamp(5).toLocalDateTime().toLocalDate());
-            collaborator.setRating(rs.getInt(6));
-            collaborators.add(collaborator);
+            collaborators.add(collaboratorFromResultSet(rs));
         }
         return collaborators;
+    }
+
+    private Collaborator collaboratorFromResultSet(ResultSet rs) throws SQLException {
+        Collaborator collaborator = new Collaborator();
+        collaborator.setId(rs.getInt(1));
+        collaborator.setUserId(rs.getInt(2));
+        collaborator.setProjectId(rs.getInt(3));
+        collaborator.setAdmin(rs.getInt(4));
+        collaborator.setDateOfJoining(rs.getTimestamp(5).toLocalDateTime().toLocalDate());
+        collaborator.setRating(rs.getInt(6));
+        return collaborator;
     }
 }
