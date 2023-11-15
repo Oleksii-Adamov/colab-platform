@@ -6,7 +6,11 @@ export async function getUsersProjects() {
 }
 
 export async function getProjectsThatUserIn() {
-    return getRequest('/api/projects/projects-user-in');
+    return getRequest('/api/projects/projects-user-in?userId=' + localStorage.getItem('userId'));
+}
+
+export async function getRecommendedProjects() {
+    return getRequest('/api/projects/project-recommendations?userId=' + localStorage.getItem('userId'));
 }
 
 export async function getProjectInfo(projectId) {
@@ -23,9 +27,9 @@ export async function createProject(projectName, projectDescription, selectedTag
         'selectedSkills': selectedSkills}, action);
 }
 
-export async function authToProject(projectId) {
+export async function authToProject(projectId, action) {
     return getRequest('/api/projects/auth?userId=' + localStorage.getItem('userId') +
-        '&projectId='+projectId);
+        '&projectId='+projectId, {}, action);
 }
 
 

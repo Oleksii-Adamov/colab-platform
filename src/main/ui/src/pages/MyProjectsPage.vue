@@ -1,45 +1,37 @@
 <template>
+  <UserNavigation></UserNavigation>
   <div>
-    <div>
-      <div>
-        <h2>Your projects</h2>
-        <ul>
-          <li v-for="item in your_projects" :key="item.id">
-            <router-link :to="{ name: 'project-page', params: { id: item.id, name: item.name} }"> {{ item.name }} </router-link>
-          </li>
-        </ul>
         <h2>Projects you are in</h2>
         <ul>
-          <li v-for="item in in_projects" :key="item.id">
-            <router-link :to="{ name: 'project-page', params: { id: item.id, name: item.name} }"> {{ item.name }} </router-link>
+          <li v-for="item in projects" :key="item.project.id">
+            <router-link :to="{ name: 'project-page', params: { id: item.project.id} }">
+              {{ item.project.name }}
+              <span v-if="item.isAdmin === true" style="color: red;"> | Administrating</span>
+            </router-link>
           </li>
         </ul>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import {getProjectsThatUserIn, getUsersProjects} from "@/services/ProjectService";
+import {getProjectsThatUserIn} from "@/services/ProjectService";
+import UserNavigation from "@/components/UserNavigation";
 
 export default {
   name: "ProjectsPage",
-  components: {},
+  components: {
+    UserNavigation
+  },
   data() {
     return {
-      your_projects: [],
-      in_projects: []
+      projects: []
     }
   },
   methods: {
     getProjects() {
-      getUsersProjects().then(response => {
-        console.log(response)
-        this.your_projects = response
-      });
       getProjectsThatUserIn().then(response => {
         console.log(response)
-        this.in_projects = response
+        this.projects = response
       });
     },
   },

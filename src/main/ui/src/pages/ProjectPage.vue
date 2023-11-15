@@ -1,7 +1,13 @@
 <template>
+  <UserNavigation></UserNavigation>
   <div>
-    <template v-if="project !== null">
+    <template v-if="project !== null && project !== undefined">
       <h1>{{this.project.name}}</h1>
+      <template v-if="is_collaborator === false">
+        <button @click="apply">Apply</button>
+        <p v-if="applied === true" style="color: green;">Applied</p>
+      </template>
+      <button v-if="is_collaborator === true" @click="contribute">Contribute</button>
       <h2>Description</h2>
       <div>{{this.project.projectDescription}}</div>
       <h2>Tags:</h2>
@@ -23,17 +29,22 @@
 
 <script>
 
-import {getProjectInfo} from "@/services/ProjectService";
+import {getProjectInfo, authToProject} from "@/services/ProjectService";
+import {createApplication} from "@/services/ApplicationService"
+import UserNavigation from "@/components/UserNavigation";
 
 export default {
   name: "ProjectPage",
   components: {
-
+    UserNavigation
   },
   data() {
     return {
       project: null,
-      contributions: []
+      contributions: [],
+      collaborator: null,
+      is_collaborator: null,
+      applied: false
     }
   },
   props:{
@@ -42,12 +53,33 @@ export default {
       required: true,
     }
   },
+  methods: {
+    apply() {
+      createApplication(this.id).then(response => {
+        console.log(response)
+        this.applied = true
+      })
+    },
+    contribute() {
+      console.log("contribute")
+    }
+  },
   mounted() {
     console.log("props id ", this.id);
     getProjectInfo(this.id).then(response => {
       console.log(response)
       this.project = response
     });
+    authToProject(this.id).then(response => {
+      console.log(response)
+      if (response.collaboratorId === undefined) {
+        this.is_collaborator = false
+      }
+      else {
+        this.collaborator = response
+        this.is_collaborator = true
+      }
+    })
   }
 }
 </script>

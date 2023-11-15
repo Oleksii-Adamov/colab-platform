@@ -19,7 +19,7 @@ export default {
             let userId = response.data.userId;
             console.log("userId =", userId);
             localStorage.setItem("userId", userId);
-            router.push({path: '/test'});
+            router.push({path: '/my-projects'});
             bus.emit('unlocked');
             });
 

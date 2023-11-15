@@ -7,17 +7,24 @@
       </div>
     </div>
     <div class="nav-links">
+      <router-link :to="{ name: 'project-search-page'}">Search</router-link>
       <router-link :to="{ name: 'my-projects-page'}">Your projects</router-link>
       <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
       <a @click="logoutMethod()">Logout</a>
     </div>
-<!--    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">-->
-<!--      <div class="navbar-nav">-->
-<!--        <a class="nav-item nav-link" href="/my-projects">Your projects</a>-->
-<!--        <a class="nav-item nav-link" href="/create-project">Create project</a>-->
-<!--        <a class="nav-item nav-link" @click="logoutMethod()">Logout</a>-->
-<!--      </div>-->
-<!--    </div>-->
+  </nav>
+  <nav class="nav">
+    <input type="checkbox" id="nav-check">
+    <div class="nav-header">
+      <div class="nav-title">
+        ColabPlatform
+      </div>
+    </div>
+    <div class="nav-links">
+      <router-link :to="{ name: 'my-projects-page'}">Your projects</router-link>
+      <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
+      <a @click="logoutMethod()">Logout</a>
+    </div>
   </nav>
 </template>
 

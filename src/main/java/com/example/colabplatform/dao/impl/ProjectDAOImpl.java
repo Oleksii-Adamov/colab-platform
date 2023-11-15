@@ -6,6 +6,7 @@ import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.enitities.Skill;
 import com.example.colabplatform.enitities.Tag;
 import com.example.colabplatform.exceptions.ProjectDAOException;
+import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -65,6 +66,26 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
+    public List<CollaboratorProjectInfo> getProjectsUserIn(Integer userId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT pr.ProjectID, pr.ProjectName,cb.ISADMIN FROM Projects pr" +
+                        " INNER JOIN PROJECTCOLLABORATORS cb on pr.PROJECTID = cb.PROJECTID" +
+                        " WHERE cb.USERID = ?" +
+                        " ORDER BY cb.ISADMIN DESC");
+        preparedStatement.setInt(1, userId);
+        ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
+        List<CollaboratorProjectInfo> projects = new ArrayList<>();
+        while (rs.next()) {
+            CollaboratorProjectInfo collaboratorProjectInfo = new CollaboratorProjectInfo();
+            collaboratorProjectInfo.setProject(projectShortInfoFromResultSet(rs));
+            collaboratorProjectInfo.setAdmin(rs.getInt(3));
+            projects.add(collaboratorProjectInfo);
+        }
+        return projects;
+    }
+
+    @Override
     public List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT pr.ProjectID, pr.ProjectName FROM Projects pr WHERE pr.CREATORUSERID = ?");
@@ -77,14 +98,20 @@ public class ProjectDAOImpl implements ProjectDAO {
     private List<Project> projectsFromResultSet(ResultSet rs) throws SQLException {
         List<Project> projects = new ArrayList<>();
         while (rs.next()) {
-            Project project = new Project();
-            project.setId(rs.getInt(1));
-            project.setName(rs.getString(2));
-            projects.add(project);
+            projects.add(projectShortInfoFromResultSet(rs));
         }
         return projects;
     }
 
+    private Project projectShortInfoFromResultSet(ResultSet rs) throws SQLException {
+        Project project = new Project();
+        project.setId(rs.getInt(1));
+        project.setName(rs.getString(2));
+        return project;
+    }
+
+
+    @Override
     public Project getProjectInfo(Integer projectId) throws SQLException {
         Project project = new Project();
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(

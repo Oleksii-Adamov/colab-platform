@@ -1,4 +1,5 @@
 <template>
+  <UserNavigation></UserNavigation>
   <div id="form-main-container">
     <div id="form-area">
       <div id="form-title">
@@ -53,9 +54,13 @@
 import {createProject} from "@/services/ProjectService";
 import {getTags} from "@/services/tagService";
 import {getSkills} from "@/services/skillService";
+import UserNavigation from "@/components/UserNavigation";
 
 export default {
   name: "CreateCoursePage",
+  components: {
+    UserNavigation
+  },
   data() {
     return {
       projectName: "",

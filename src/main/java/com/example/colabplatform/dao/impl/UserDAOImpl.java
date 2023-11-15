@@ -13,9 +13,10 @@ import java.sql.Statement;
 public class UserDAOImpl implements UserDAO {
     @Override
     public Integer create(User user) throws SQLException {
+        String[] returnCols = { "USERID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
                 .prepareStatement("INSERT INTO USERS (UserFullName, KeycloakUserID) VALUES(?, ?)",
-                        Statement.RETURN_GENERATED_KEYS);
+                        returnCols);
         preparedStatement.setString(1, user.getFullName());
         preparedStatement.setString(2, user.getKeycloakId());
         preparedStatement.execute();

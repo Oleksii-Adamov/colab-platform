@@ -6,13 +6,11 @@ import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.exceptions.ProjectValidatorException;
 import com.example.colabplatform.exceptions.UserValidatorException;
 import com.example.colabplatform.exceptions.ValidationCommonsException;
+import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 import com.example.colabplatform.services.ProjectService;
 import com.example.colabplatform.validators.ProjectValidator;
 import com.example.colabplatform.validators.UserValidator;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,10 +74,10 @@ public class ProjectsController extends AbstractController {
         try {
             processRequest(req, resp);
             String jsonResponse = "";
-            if (requestMapping("/user-projects")) {
+            if (requestMapping("/projects-user-in")) {
                 String userIdString = req.getParameter("userId");
                 Integer userId = userValidator.getValidatedUserId(userIdString);
-                List<Project> projects = projectService.getProjectsCreatedByUser(userId);
+                List<CollaboratorProjectInfo> projects = projectService.getProjectsUserIn(userId);
                 jsonResponse = new Gson().toJson(projects);
                 this.responseOut.print(jsonResponse);
             }
@@ -97,6 +95,13 @@ public class ProjectsController extends AbstractController {
                     resp.sendError(500, errorMsg);
                 }
             }
+            else if (requestMapping("/project-recommendations")) {
+                String userIdString = req.getParameter("userId");
+                Integer userId = userValidator.getValidatedUserId(userIdString);
+                List<Project> projects = projectService.getRecommendedProjects(userId);
+                jsonResponse = new Gson().toJson(projects);
+                this.responseOut.print(jsonResponse);
+            }
             else if (requestMapping("/auth")) {
                 String userIdString = req.getParameter("userId");
                 Integer userId = userValidator.getValidatedUserId(userIdString);
@@ -104,13 +109,17 @@ public class ProjectsController extends AbstractController {
                 Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
                 Collaborator collaborator = projectService.getCollaborator(userId, projectId);
                 if (collaborator != null) {
-                    jsonResponse = new Gson().toJson(collaborator);
+                    Gson gson = new GsonBuilder().setPrettyPrinting()
+                            .excludeFieldsWithoutExposeAnnotation()
+                            .create();
+                    jsonResponse = gson.toJson(collaborator);
+                    //jsonResponse = new Gson().toJson(collaborator);
                     this.responseOut.print(jsonResponse);
                 }
                 else {
                     String msg = "You are not collaborator";
                     logger.info(msg);
-                    resp.sendError(401, msg);
+                    // send nothing
                 }
             }
             else {

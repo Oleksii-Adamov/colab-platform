@@ -3,6 +3,7 @@ package com.example.colabplatform.services;
 import com.example.colabplatform.dao.DAOFactory;
 import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.enitities.Project;
+import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,8 +18,8 @@ public class ProjectService {
         return  createdProjectId;
     }
 
-    public List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException {
-        return DAOFactory.getInstance().getProjectDAO().getProjectsCreatedByUser(userId);
+    public List<CollaboratorProjectInfo> getProjectsUserIn(Integer userId) throws SQLException {
+        return DAOFactory.getInstance().getProjectDAO().getProjectsUserIn(userId);
     }
 
     public Project getProjectInfo(Integer projectId) throws SQLException {
@@ -28,4 +29,9 @@ public class ProjectService {
     public Collaborator getCollaborator(Integer userId, Integer projectId) throws SQLException {
         return DAOFactory.getInstance().getCollaboratorDAO().getByUserAndProjectId(userId, projectId);
     }
+
+    public List<Project> getRecommendedProjects(Integer userId) throws SQLException {
+        return DAOFactory.getInstance().getProjectDAO().getProjects();
+    }
+
 }

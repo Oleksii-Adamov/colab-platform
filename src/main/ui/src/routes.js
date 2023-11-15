@@ -3,6 +3,7 @@ import LandingPage from "@/pages/LandingPage";
 import ProjectPage from "@/pages/ProjectPage";
 import MyProjectsPage from "@/pages/MyProjectsPage";
 import CreateProjectPage from "@/pages/CreateProjectPage";
+import ProjectSearchPage from "@/pages/ProjectSearchPage";
 
 
 export default [
@@ -19,6 +20,11 @@ export default [
         path: '/my-projects',
         component: MyProjectsPage,
         name: 'my-projects-page'
+    },
+    {
+        path: '/project-search',
+        component: ProjectSearchPage,
+        name: 'project-search-page'
     },
     {
         path: '/projects/:id',
