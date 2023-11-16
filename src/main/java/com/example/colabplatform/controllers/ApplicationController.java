@@ -75,10 +75,10 @@ public class ApplicationController extends AbstractController {
         try {
             processRequest(req, resp);
             String jsonResponse = "";
-            if (requestMapping("/project-applications")) {
+            if (requestMapping("/project-pending-applications")) {
                 String projectIdString = req.getParameter("projectId");
                 Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
-                List<ApplicationInfo> applicationInfos = applicationService.getProjectApplications(projectId);
+                List<ApplicationInfo> applicationInfos = applicationService.getProjectPendingApplications(projectId);
                 jsonResponse = new Gson().toJson(applicationInfos);
                 this.responseOut.print(jsonResponse);
             }

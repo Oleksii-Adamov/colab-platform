@@ -1,30 +1,16 @@
 <template>
   <nav class="nav">
     <input type="checkbox" id="nav-check">
-    <div class="nav-header">
-      <div class="nav-title">
-        ColabPlatform
-      </div>
-    </div>
     <div class="nav-links">
-      <router-link :to="{ name: 'project-search-page'}">Search</router-link>
-      <router-link :to="{ name: 'my-projects-page'}">Your projects</router-link>
-      <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
-      <a @click="logoutMethod()">Logout</a>
+      <router-link :to="{ name: 'applications-page'}">Applications</router-link>
+
     </div>
   </nav>
 </template>
 
 <script>
-import {logout} from "@/authUtils";
-
 export default {
-  name: "UserNavigation",
-  methods: {
-    logoutMethod() {
-      logout();
-    }
-  }
+  name: "ProjectAdminNavigation"
 }
 </script>
 

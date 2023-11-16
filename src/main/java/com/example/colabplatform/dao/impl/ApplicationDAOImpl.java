@@ -71,10 +71,13 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     }
 
     @Override
-    public List<Application> getProjectApplications(Integer projectId) throws SQLException {
+    public List<Application> getProjectPendingApplications(Integer projectId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT ap.ApplicationID, ap.UserID, ap.ProjectID, ap.ApplicationDate, ap.Status FROM PROJECTAPPLICANTS ap WHERE ap.ProjectID = ?");
+                "SELECT ap.ApplicationID, ap.UserID, ap.ProjectID, ap.ApplicationDate, ap.Status" +
+                        " FROM PROJECTAPPLICANTS ap" +
+                        " WHERE ap.ProjectID = ? AND ap.STATUS = ?");
         preparedStatement.setInt(1, projectId);
+        preparedStatement.setString(2, Application.Status.PENDING.toString());
         ResultSet rs = preparedStatement.executeQuery();
         ConnectionFactory.instance().releaseConnection();
         return applicationsFromResultSet(rs);
@@ -87,7 +90,10 @@ public class ApplicationDAOImpl implements ApplicationDAO {
             application.setId(rs.getInt(1));
             application.setUserId(rs.getInt(2));
             application.setProjectId(rs.getInt(3));
-            application.setApplicationDate(rs.getTimestamp(4).toLocalDateTime().toLocalDate());
+            Timestamp timestamp = rs.getTimestamp(4);
+            application.setDay(timestamp.getDay());
+            application.setMonth(timestamp.getMonth());
+            application.setYear(timestamp.getYear());
             application.setStatus(Application.Status.valueOf(rs.getString(5)));
             applications.add(application);
         }

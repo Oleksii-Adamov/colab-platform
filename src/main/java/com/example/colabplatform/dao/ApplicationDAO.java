@@ -11,5 +11,5 @@ public interface ApplicationDAO {
     void approve(Integer applicationId, Integer userId, Integer projectId) throws SQLException;
 
     void reject(Integer applicationId) throws SQLException;
-    List<Application> getProjectApplications(Integer projectId) throws SQLException;
+    List<Application> getProjectPendingApplications(Integer projectId) throws SQLException;
 }

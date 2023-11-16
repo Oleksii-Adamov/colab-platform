@@ -6,7 +6,12 @@ public class Application implements Entity {
     private Integer id;
     private Integer userId;
     private Integer projectId;
-    private LocalDate applicationDate;
+
+    private Integer day;
+
+    private Integer month;
+
+    private Integer year;
     private String status;
 
     public enum Status {
@@ -48,12 +53,32 @@ public class Application implements Entity {
         this.projectId = projectId;
     }
 
-    public LocalDate getApplicationDate() {
-        return applicationDate;
+    public Integer getDay() {
+        return day;
     }
 
-    public void setApplicationDate(LocalDate applicationDate) {
-        this.applicationDate = applicationDate;
+    public void setDay(Integer day) {
+        this.day = day;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getStatus() {

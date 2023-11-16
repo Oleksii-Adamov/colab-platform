@@ -21,8 +21,8 @@ public class ApplicationService {
         DAOFactory.getInstance().getApplicationDAO().reject(applicationId);
     }
 
-    public List<ApplicationInfo> getProjectApplications(Integer projectId) throws SQLException {
-        List<Application> applications = DAOFactory.getInstance().getApplicationDAO().getProjectApplications(projectId);
+    public List<ApplicationInfo> getProjectPendingApplications(Integer projectId) throws SQLException {
+        List<Application> applications = DAOFactory.getInstance().getApplicationDAO().getProjectPendingApplications(projectId);
         List<ApplicationInfo> applicationInfos = new ArrayList<>();
         for (Application application : applications) {
             String userFullName = DAOFactory.getInstance().getUserDAO().getFullNameById(application.getUserId());
