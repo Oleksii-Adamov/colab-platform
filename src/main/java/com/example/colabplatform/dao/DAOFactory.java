@@ -17,6 +17,8 @@ public class DAOFactory {
 
     private final CollaboratorDAO collaboratorDAO = new CollaboratorDAOImpl();
 
+    private final ContributionDAO contributionDAO = new ContributionDAOImpl();
+
     public static DAOFactory getInstance(){
         return daoFactory;
     }
@@ -42,5 +44,9 @@ public class DAOFactory {
 
     public CollaboratorDAO getCollaboratorDAO() {
         return collaboratorDAO;
+    }
+
+    public ContributionDAO getContributionDAO() {
+        return contributionDAO;
     }
 }

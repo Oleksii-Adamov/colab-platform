@@ -44,8 +44,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
                 prepareStatement("UPDATE PROJECTAPPLICANTS SET Status = ? WHERE APPLICATIONID = ?");
 
-        preparedStatement.setString(1, Application.Status.APPROVED.toString()); // Replace with the status you want
-        preparedStatement.setInt(2, applicationId); // Replace with your application ID
+        preparedStatement.setString(1, Application.Status.APPROVED.toString());
+        preparedStatement.setInt(2, applicationId);
 
         int rowsAffected = preparedStatement.executeUpdate();
 
@@ -60,8 +60,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
                 prepareStatement("UPDATE PROJECTAPPLICANTS SET Status = ? WHERE APPLICATIONID = ?");
 
-        preparedStatement.setString(1, Application.Status.REJECTED.toString()); // Replace with the status you want
-        preparedStatement.setInt(2, applicationId); // Replace with your application ID
+        preparedStatement.setString(1, Application.Status.REJECTED.toString());
+        preparedStatement.setInt(2, applicationId);
 
         int rowsAffected = preparedStatement.executeUpdate();
 
@@ -75,7 +75,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT ap.ApplicationID, ap.UserID, ap.ProjectID, ap.ApplicationDate, ap.Status" +
                         " FROM PROJECTAPPLICANTS ap" +
-                        " WHERE ap.ProjectID = ? AND ap.STATUS = ?");
+                        " WHERE ap.ProjectID = ? AND ap.STATUS = ?" +
+                        " ORDER BY ap.ApplicationDate DESC");
         preparedStatement.setInt(1, projectId);
         preparedStatement.setString(2, Application.Status.PENDING.toString());
         ResultSet rs = preparedStatement.executeQuery();
