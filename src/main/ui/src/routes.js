@@ -1,16 +1,14 @@
-import TestPage from "@/pages/TestPage";
 import LandingPage from "@/pages/LandingPage";
 import ProjectPage from "@/pages/ProjectPage";
 import MyProjectsPage from "@/pages/MyProjectsPage";
 import CreateProjectPage from "@/pages/CreateProjectPage";
 import ProjectSearchPage from "@/pages/ProjectSearchPage";
+import ContributePage from "@/pages/ContributePage";
+import ApplicationsPage from "@/pages/ApplicationsPage";
+import PendingContributionsPage from "@/pages/PendingContributionsPage";
 
 
 export default [
-    {
-        path: '/test',
-        component: TestPage
-    },
     {
         path: '/create-project',
         component: CreateProjectPage,
@@ -31,6 +29,21 @@ export default [
         name: 'project-page',
         component: ProjectPage,
         props: true,
+    },
+    {
+        path: '/contribute',
+        name: 'contribute-page',
+        component: ContributePage,
+    },
+    {
+        path: '/projects/applications',
+        name: 'applications-page',
+        component: ApplicationsPage,
+    },
+    {
+        path: '/projects/pending-contributions',
+        name: 'pending-contributions-page',
+        component: PendingContributionsPage,
     },
     {
         path: '/',

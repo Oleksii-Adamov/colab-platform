@@ -17,10 +17,6 @@ export async function getProjectInfo(projectId) {
     return getRequest('/api/projects/project-info?projectId='+projectId);
 }
 
-export async function getProjectContributions(projectId) {
-    return getRequest('/api/projects/contributions?projectId='+projectId);
-}
-
 export async function authToProject(projectId) {
     return getRequest('/api/projects/auth?userId=' + localStorage.getItem('userId') +
         '&projectId='+projectId);

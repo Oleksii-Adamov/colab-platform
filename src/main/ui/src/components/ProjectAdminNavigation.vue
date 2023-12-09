@@ -2,15 +2,21 @@
   <nav class="nav">
     <input type="checkbox" id="nav-check">
     <div class="nav-links">
-      <router-link :to="{ name: 'applications-page'}">Applications</router-link>
-
+      <router-link :to="{ path: '/projects/' + this.getProjectId()}">Project home</router-link>
+      <router-link :to="{ name: 'applications-page'}">Pending applications</router-link>
+      <router-link :to="{ name: 'pending-contributions-page'}">Pending contributions</router-link>
     </div>
   </nav>
 </template>
 
 <script>
 export default {
-  name: "ProjectAdminNavigation"
+  name: "ProjectAdminNavigation",
+  methods: {
+    getProjectId() {
+      return localStorage.getItem('projectId')
+    }
+  }
 }
 </script>
 

@@ -78,7 +78,7 @@ export default {
           this.$router.push({path: '/my-projects'});
         });
       } else {
-        alert("All field must be field");
+        alert("All field must be filled");
       }
       },
       getPossibleTagsAndSkills() {
@@ -336,7 +336,6 @@ textarea {
 label{
   color:#777;
   font-weight:600;
-  text-transform:camel;
 }
 .form-control{
   color:#777 !important;

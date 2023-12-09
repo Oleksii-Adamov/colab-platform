@@ -15,7 +15,7 @@ import java.util.List;
 public class ContributionDAOImpl implements ContributionDAO {
     @Override
     public Integer create(Contribution contribution) throws SQLException {
-        String[] returnCols = { "APPLICATIONID" };
+        String[] returnCols = { "CONTRIBUTIONID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
                 .prepareStatement("INSERT INTO CONTRIBUTIONS (USERID, PROJECTID, CONTRIBUTIONDESCRIPTION, CONTRIBUTIONDATE, CONTRIBUTIONVALUE, STATUS)" +
                                 " VALUES(?, ?, ?, ?, ?, ?)",

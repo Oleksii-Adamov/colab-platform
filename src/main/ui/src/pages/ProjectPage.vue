@@ -1,5 +1,6 @@
 <template>
   <UserNavigation></UserNavigation>
+  <ProjectAdminNavigation v-if="is_admin === true"></ProjectAdminNavigation>
   <template v-if="project !== null && project !== undefined">
 <!--    <ProjectAdminNavigation v-if="collaborator !== null && collaborator.isAdmin === true"></ProjectAdminNavigation>-->
     <h1>{{this.project.name}}</h1>
@@ -8,6 +9,8 @@
       <p v-if="applied === true" style="color: green;">Applied</p>
     </template>
     <button v-if="is_collaborator === true" @click="contribute">Contribute</button>
+<!--    <router-link v-if="is_collaborator === true" :to="{ path: '/contribute?projectId=' + this.id}"> Contribute</router-link>-->
+<!--    <router-link v-if="is_collaborator === true" :to="{ name: 'contribute-page', params: {projectId: this.project.id} }"> Contribute</router-link>-->
     <h2>Description</h2>
     <div>{{this.project.projectDescription}}</div>
     <h2>Tags:</h2>
@@ -18,26 +21,27 @@
     <div v-for="skill in this.project.skills" :key="skill.id">
       <div>{{skill.name}}</div>
     </div>
-    <div v-if="pendingApplications.length > 0">
-      <h2>Pending applications</h2>
-      <div style="display: flex; justify-content: center;">
-        <ul>
-          <li v-for="applicationInfo in pendingApplications" :key="applicationInfo.application.id" style="display: flex; align-items: center;">
-  <!--          <router-link :to="{ name: 'user-page', params: { id: application.userId} }">-->
-            <a href="#">
-              {{ applicationInfo.userFullName }}
-            </a>
-            <button @click="approveApplication(applicationInfo.application.id, applicationInfo.application.userId)">Approve</button>
-            <button @click="rejectApplication(applicationInfo.application.id)">Reject</button>
-          </li>
-        </ul>
-      </div>
-    </div>
     <h2>Contributions:</h2>
-    <ul>
-      <li v-for="item in this.contributions" :key="item.userId">
-      </li>
-    </ul>
+    <div class="custom-table">
+      <table>
+        <thead>
+        <tr>
+          <th class="description-column">Description</th>
+          <th>Value</th>
+          <th>Date</th>
+          <th>User</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="contributionInfo in contributions" :key="contributionInfo.contribution.id">
+          <td>{{ contributionInfo.contribution.description }}</td>
+          <td>{{ contributionInfo.contribution.value }}</td>
+          <td>{{ contributionInfo.contribution.day }}/{{ contributionInfo.contribution.month}}/{{ contributionInfo.contribution.year}}</td>
+          <td>{{ contributionInfo.userFullName }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </template>
 </template>
 
@@ -47,14 +51,16 @@ import {getProjectInfo, authToProject} from "@/services/ProjectService";
 import {
   approveApplication,
   createApplication,
-  getProjectPendingApplications,
   rejectApplication
 } from "@/services/ApplicationService"
 import UserNavigation from "@/components/UserNavigation";
+import ProjectAdminNavigation from "@/components/ProjectAdminNavigation";
+import {getProjectApprovedContributions} from "@/services/contributionService";
 
 export default {
   name: "ProjectPage",
   components: {
+    ProjectAdminNavigation,
     UserNavigation
   },
   data() {
@@ -63,8 +69,8 @@ export default {
       contributions: [],
       collaborator: null,
       is_collaborator: null,
-      applied: false,
-      pendingApplications: []
+      is_admin: null,
+      applied: false
     }
   },
   props:{
@@ -78,7 +84,7 @@ export default {
       createApplication(this.id, () => {this.applied = true})
     },
     contribute() {
-      console.log("contribute")
+      this.$router.push({path: '/contribute?projectId=' + this.id})
     },
     approveApplication(applicationId, userId) {
       approveApplication(applicationId, userId, this.id, () => {
@@ -97,7 +103,7 @@ export default {
   },
   mounted() {
     console.log("props id ", this.id);
-
+    localStorage.setItem('projectId', this.id)
     authToProject(this.id).then((response) => {console.log(response)
       if (response === undefined || response.id === undefined) {
         this.is_collaborator = false
@@ -106,15 +112,14 @@ export default {
         this.collaborator = response
         this.is_collaborator = true
       }
+      this.is_admin = this.collaborator.isAdmin
       getProjectInfo(this.id).then(response => {
         console.log(response)
         this.project = response
-        if (this.is_collaborator && this.collaborator.isAdmin === true) {
-          getProjectPendingApplications(this.id).then(response => {
-            console.log(response)
-            this.pendingApplications = response
-          })
-        }
+      });
+      getProjectApprovedContributions(this.id).then(response => {
+        console.log(response)
+        this.contributions = response
       });
     }
     )
@@ -122,5 +127,23 @@ export default {
 }
 </script>
 <style scoped>
+.custom-table {
+  width: 80%;
+  margin: 0 auto;
+}
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.description-column {
+  width: 60%;
+}
 </style>

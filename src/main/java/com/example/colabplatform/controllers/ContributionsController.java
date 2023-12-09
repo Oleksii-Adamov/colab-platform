@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class ContributionController extends AbstractController {
+public class ContributionsController extends AbstractController {
     private static final ContributionService contributionService = new ContributionService();
     private static final ProjectValidator projectValidator = new ProjectValidator();
     private static final UserValidator userValidator = new UserValidator();

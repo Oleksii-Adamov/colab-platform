@@ -51,6 +51,14 @@
         <servlet-name>ApplicationController</servlet-name>
         <url-pattern>/api/applications/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ContributionsController</servlet-name>
+        <servlet-class>com.example.colabplatform.controllers.ContributionsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContributionsController</servlet-name>
+        <url-pattern>/api/contributions/*</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>ValidateJWTAccessTokenFilter</filter-name>
         <filter-class>com.example.colabplatform.filters.ValidateJWTAccessTokenFilter</filter-class>

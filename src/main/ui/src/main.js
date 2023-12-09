@@ -33,7 +33,6 @@ keycloak.init({ onLoad: 'login-required' }).then((auth) => {
 
     app.use(router)
 
-
     localStorage.setItem("user-token", keycloak.token);
     console.log(keycloak.token);
 
