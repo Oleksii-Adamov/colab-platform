@@ -15,6 +15,10 @@ public class Project implements Entity {
 
     private List<Skill> skills = new ArrayList<>();
 
+    private Float rating;
+
+    private Integer numberOfRatings;
+
     public Project() {
     }
 
@@ -27,6 +31,22 @@ public class Project implements Entity {
         this.name = name;
         this.creatorUserID = creatorUserID;
         this.description = description;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
+    public Integer getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(Integer numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
     }
 
     public int getId() {

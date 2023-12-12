@@ -28,4 +28,10 @@ export async function createProject(projectName, projectDescription, selectedTag
         'selectedSkills': selectedSkills}, action);
 }
 
+export async function rateProject(projectId, rating, action) {
+    return postRequest('/api/projects/rate?projectId=' + projectId + '&userId=' + localStorage.getItem('userId') +
+        '&rating=' + rating,
+        {}, action);
+}
+
 

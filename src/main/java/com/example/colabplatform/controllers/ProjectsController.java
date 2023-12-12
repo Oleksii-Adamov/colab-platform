@@ -54,6 +54,15 @@ public class ProjectsController extends AbstractController {
                 this.responseOut.print(jsonResponse);
                 logger.info("response from " + req.getRequestURI() + " " + jsonResponse);
             }
+            else if (requestMapping("/rate")) {
+                String projectIdString = req.getParameter("projectId");
+                String userIdString = req.getParameter("userId");
+                String ratingString = req.getParameter("rating");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                Integer userId = userValidator.getValidatedUserId(userIdString);
+                Integer rating = projectValidator.getValidatedProjectRating(ratingString);
+                projectService.rateProject(projectId, userId, rating);
+            }
             else {
                 logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());

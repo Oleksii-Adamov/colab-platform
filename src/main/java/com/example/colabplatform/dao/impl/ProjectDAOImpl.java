@@ -2,9 +2,11 @@ package com.example.colabplatform.dao.impl;
 
 import com.example.colabplatform.dao.ProjectDAO;
 import com.example.colabplatform.database.ConnectionFactory;
+import com.example.colabplatform.enitities.Application;
 import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.enitities.Skill;
 import com.example.colabplatform.enitities.Tag;
+import com.example.colabplatform.exceptions.ApplicationDAOException;
 import com.example.colabplatform.exceptions.ProjectDAOException;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 
@@ -115,7 +117,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public Project getProjectInfo(Integer projectId) throws SQLException {
         Project project = new Project();
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT P.ProjectName, P.PROJECTDESCRIPTION" +
+                "SELECT P.ProjectName, P.PROJECTDESCRIPTION, P.RATING, P.NUMBEROFRATINGS" +
                         " FROM Projects P" +
                         " WHERE P.PROJECTID = ?");
         preparedStatement.setInt(1, projectId);
@@ -123,6 +125,8 @@ public class ProjectDAOImpl implements ProjectDAO {
         if (rs.next()) {
             project.setName(rs.getString("ProjectName"));
             project.setDescription(rs.getString("PROJECTDESCRIPTION"));
+            project.setRating(rs.getFloat("RATING"));
+            project.setNumberOfRatings(rs.getInt("NUMBEROFRATINGS"));
         }
 
         preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
@@ -152,5 +156,40 @@ public class ProjectDAOImpl implements ProjectDAO {
 
         ConnectionFactory.instance().releaseConnection();
         return project;
+    }
+    @Override
+    public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("UPDATE Projects P" +
+                        " SET P.rating = (P.rating * P.NUMBEROFRATINGS + ?) / (P.NUMBEROFRATINGS + 1)," +
+                        " P.NUMBEROFRATINGS = P.NUMBEROFRATINGS + 1" +
+                        " WHERE P.ProjectID = ?");
+
+        preparedStatement.setInt(1, rating);
+        preparedStatement.setInt(2, projectId);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if (rowsAffected < 1) {
+            throw new ApplicationDAOException("Project rating update failed");
+        }
+        // create new rating or update if exists
+        preparedStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("MERGE INTO PROJECTRATINGS PR INNER JOIN Projects P ON PR.PROJECTID = P.PROJECTID" +
+                        " USING DUAL" +
+                        " ON (PR.PROJECTID = ? AND PR.USERID = ?)" +
+                        " WHEN MATCHED THEN" +
+                        " UPDATE SET P.RATING = (P.RATING * P.NUMBEROFRATINGS - PR.RATING + ?) / P.NUMBEROFRATINGS, PR.RATING = ?" +
+                        " WHEN NOT MATCHED THEN" +
+                        " INSERT (PR.PROJECTID, PR.USERID, PR.RATING)" +
+                        " VALUES (?, ?, ?)");
+        preparedStatement.setInt(1, projectId);
+        preparedStatement.setInt(2, userId);
+        preparedStatement.setInt(3, rating);
+        preparedStatement.setInt(4, rating);
+        preparedStatement.setInt(4, projectId);
+        preparedStatement.setInt(5, userId);
+        preparedStatement.setDouble(6, rating);
+        preparedStatement.executeUpdate();
     }
 }

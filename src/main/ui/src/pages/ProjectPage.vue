@@ -1,9 +1,19 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <template>
   <UserNavigation></UserNavigation>
   <ProjectAdminNavigation v-if="is_admin === true"></ProjectAdminNavigation>
   <template v-if="project !== null && project !== undefined">
-<!--    <ProjectAdminNavigation v-if="collaborator !== null && collaborator.isAdmin === true"></ProjectAdminNavigation>-->
+    <!--    <ProjectAdminNavigation v-if="collaborator !== null && collaborator.isAdmin === true"></ProjectAdminNavigation>-->
     <h1>{{this.project.name}}</h1>
+    <h2 v-if="this.project.numberOfRatings && this.project.numberOfRatings > 0">Project rating (average from user's): {{this.project.rating}}/5 (based on {{this.project.numberOfRatings}} votes)</h2>
+    <h2 v-else>This project doesn't yet have rating</h2>
+    <div style="margin-bottom: 20px">
+      <h2 style="display: inline">Rate project: </h2>
+      <div class="star-rating">
+        <span class="star" v-for="(star, index) in 5" :key="index" @click="rateProject(index + 1)" :class="{ 'filled': index < selectedStars }">&#9733;</span>
+      </div>
+    </div>
     <template v-if="is_collaborator === false">
       <button @click="apply">Apply</button>
       <p v-if="applied === true" style="color: green;">Applied</p>
@@ -47,7 +57,7 @@
 
 <script>
 
-import {getProjectInfo, authToProject} from "@/services/ProjectService";
+import {getProjectInfo, authToProject, rateProject} from "@/services/ProjectService";
 import {
   approveApplication,
   createApplication,
@@ -70,7 +80,8 @@ export default {
       collaborator: null,
       is_collaborator: null,
       is_admin: null,
-      applied: false
+      applied: false,
+      selectedStars: 0
     }
   },
   props:{
@@ -99,12 +110,23 @@ export default {
     removeFromPendingApplications(applicationId) {
       this.pendingApplications = this.pendingApplications.filter(applicationInfo =>
           applicationInfo.application.id !== applicationId);
+    },
+    rateProject(stars) {
+      this.selectedStars = stars;
+      rateProject(this.id, this.selectedStars, () => {
+        console.log('got rate response')
+        getProjectInfo(this.id).then(response => {
+          console.log(response)
+          this.project = response
+        })
+      })
+
     }
   },
   mounted() {
     console.log("props id ", this.id);
     localStorage.setItem('projectId', this.id)
-    authToProject(this.id).then((response) => {console.log(response)
+    authToProject(this.id).then((response) => { console.log(response)
       if (response === undefined || response.id === undefined) {
         this.is_collaborator = false
       }
@@ -145,5 +167,18 @@ td {
 }
 .description-column {
   width: 60%;
+}
+.star-rating {
+  font-size: 24px;
+  display: inline-block;
+}
+
+.star {
+  cursor: pointer;
+  color: #ccc;
+}
+
+.star.filled {
+  color: #ffdd00;
 }
 </style>

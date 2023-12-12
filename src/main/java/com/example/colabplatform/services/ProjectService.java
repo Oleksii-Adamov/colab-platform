@@ -34,4 +34,7 @@ public class ProjectService {
         return DAOFactory.getInstance().getProjectDAO().getProjects();
     }
 
+    public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
+        DAOFactory.getInstance().getProjectDAO().rateProject(projectId, userId, rating);
+    }
 }
