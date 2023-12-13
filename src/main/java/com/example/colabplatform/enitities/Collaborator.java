@@ -18,6 +18,10 @@ public class Collaborator implements Entity {
     private Integer yearOfJoining;
     private Integer rating;
 
+    private Integer totalValue;
+
+    private Integer numberOfContributions;
+
     public Collaborator() {
     }
 
@@ -100,5 +104,21 @@ public class Collaborator implements Entity {
         else {
             throw new CollaboratorException("Invalid argument admin, must be 0 or 1");
         }
+    }
+
+    public Integer getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(Integer totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public Integer getNumberOfContributions() {
+        return numberOfContributions;
+    }
+
+    public void setNumberOfContributions(Integer numberOfContributions) {
+        this.numberOfContributions = numberOfContributions;
     }
 }

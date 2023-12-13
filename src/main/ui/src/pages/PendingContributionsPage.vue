@@ -19,7 +19,11 @@
           <td>{{ contributionInfo.contribution.description }}</td>
           <td>{{ contributionInfo.contribution.value }}</td>
           <td>{{ contributionInfo.contribution.day }}/{{ contributionInfo.contribution.month}}/{{ contributionInfo.contribution.year}}</td>
-          <td>{{ contributionInfo.userFullName }}</td>
+          <td>
+            <router-link :to="{ name: 'profile-page', params: { id: contributionInfo.contribution.userId} }">
+            {{ contributionInfo.userFullName }}
+            </router-link>
+          </td>
           <td><button @click="approveContribution(contributionInfo.contribution.id)">Approve</button></td>
           <td><button @click="rejectContribution(contributionInfo.contribution.id)">Reject</button></td>
         </tr>

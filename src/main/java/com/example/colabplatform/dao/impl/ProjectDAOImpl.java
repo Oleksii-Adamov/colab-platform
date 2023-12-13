@@ -2,18 +2,12 @@ package com.example.colabplatform.dao.impl;
 
 import com.example.colabplatform.dao.ProjectDAO;
 import com.example.colabplatform.database.ConnectionFactory;
-import com.example.colabplatform.enitities.Application;
-import com.example.colabplatform.enitities.Project;
-import com.example.colabplatform.enitities.Skill;
-import com.example.colabplatform.enitities.Tag;
+import com.example.colabplatform.enitities.*;
 import com.example.colabplatform.exceptions.ApplicationDAOException;
 import com.example.colabplatform.exceptions.ProjectDAOException;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +64,8 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<CollaboratorProjectInfo> getProjectsUserIn(Integer userId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED, cb.ISADMIN FROM Projects pr" +
+                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED, cb.ISADMIN, cb.DATEOFJOINING, cb.RATING," +
+                        " cb.NUMBEROFCONTRIBUTIONS, cb.TOTALVALUE FROM Projects pr" +
                         " INNER JOIN PROJECTCOLLABORATORS cb on pr.PROJECTID = cb.PROJECTID" +
                         " WHERE cb.USERID = ?" +
                         " ORDER BY cb.ISADMIN DESC");
@@ -80,8 +75,21 @@ public class ProjectDAOImpl implements ProjectDAO {
         List<CollaboratorProjectInfo> projects = new ArrayList<>();
         while (rs.next()) {
             CollaboratorProjectInfo collaboratorProjectInfo = new CollaboratorProjectInfo();
+
             collaboratorProjectInfo.setProject(projectShortInfoFromResultSet(rs));
-            collaboratorProjectInfo.setAdmin(rs.getInt(4));
+
+            Collaborator collaborator = new Collaborator();
+            collaborator.setUserId(userId);
+            collaborator.setAdmin(rs.getInt(4));
+            Timestamp timestamp = rs.getTimestamp(5);
+            collaborator.setDayOfJoining(timestamp.toLocalDateTime().getDayOfMonth());
+            collaborator.setMonthOfJoining(timestamp.toLocalDateTime().getMonthValue());
+            collaborator.setYearOfJoining(timestamp.toLocalDateTime().getYear());
+            collaborator.setRating(rs.getInt(6));
+            collaborator.setNumberOfContributions(rs.getInt(7));
+            collaborator.setTotalValue(rs.getInt(8));
+            collaboratorProjectInfo.setCollaborator(collaborator);
+
             projects.add(collaboratorProjectInfo);
         }
         return projects;

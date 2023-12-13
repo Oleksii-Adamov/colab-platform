@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 <template>
   <UserNavigation></UserNavigation>
   <ProjectAdminNavigation v-if="is_admin === true"></ProjectAdminNavigation>
@@ -157,17 +155,6 @@ export default {
           this.$router.push({path: '/my-projects'});
         }
       });
-      // getProjectApprovedContributions(this.id).then(response => {
-      //   console.log(response)
-      //   this.contributions = response
-      // });
-      // getUserRatingOfProject(this.id).then(response => {
-      //   console.log(response)
-      //   if (response.rating) {
-      //     this.selectedStars = response.rating
-      //     this.is_user_rated_project = true
-      //   }
-      // });
     }
     )
   }

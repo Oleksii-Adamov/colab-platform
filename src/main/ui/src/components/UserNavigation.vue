@@ -10,6 +10,7 @@
       <router-link :to="{ name: 'project-search-page'}">Search</router-link>
       <router-link :to="{ name: 'my-projects-page'}">Your projects</router-link>
       <router-link :to="{ name: 'create-project-page'}">Create project</router-link>
+      <router-link :to="{ path: '/users/' + this.getUserId()}">Profile</router-link>
       <a @click="logoutMethod()">Logout</a>
     </div>
   </nav>
@@ -23,6 +24,9 @@ export default {
   methods: {
     logoutMethod() {
       logout();
+    },
+    getUserId() {
+      return localStorage.getItem('userId')
     }
   }
 }

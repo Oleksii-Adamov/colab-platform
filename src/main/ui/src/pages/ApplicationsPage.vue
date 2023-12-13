@@ -6,9 +6,12 @@
     <ul>
       <li v-for="applicationInfo in pendingApplications" :key="applicationInfo.application.id" style="display: flex; align-items: center;">
         <!--          <router-link :to="{ name: 'user-page', params: { id: application.userId} }">-->
-        <a href="#">
+<!--        <a href="#">-->
+<!--          {{ applicationInfo.userFullName }}-->
+<!--        </a>-->
+        <router-link :to="{ name: 'profile-page', params: { id: applicationInfo.application.userId} }">
           {{ applicationInfo.userFullName }}
-        </a>
+        </router-link>
         <button @click="approveApplication(applicationInfo.application.id, applicationInfo.application.userId)">Approve</button>
         <button @click="rejectApplication(applicationInfo.application.id)">Reject</button>
       </li>
@@ -54,5 +57,7 @@ export default {
 </script>
 
 <style scoped>
-
+button {
+  margin-left: 10px;
+}
 </style>

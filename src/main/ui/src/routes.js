@@ -7,6 +7,8 @@ import ContributePage from "@/pages/ContributePage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import PendingContributionsPage from "@/pages/PendingContributionsPage";
 import UpdateProjectPage from "@/pages/UpdateProjectPage";
+import ProfilePage from "@/pages/ProfilePage";
+import UpdateProfilePage from "@/pages/UpdateProfilePage";
 
 
 export default [
@@ -50,6 +52,18 @@ export default [
         path: '/projects/edit',
         name: 'edit-project-page',
         component: UpdateProjectPage,
+    },
+    {
+        path: '/users/:id',
+        name: 'profile-page',
+        component: ProfilePage,
+        props: true,
+    },
+    {
+        path: '/edit-profile',
+        name: 'edit-profile-page',
+        component: UpdateProfilePage,
+        props: true,
     },
     {
         path: '/',

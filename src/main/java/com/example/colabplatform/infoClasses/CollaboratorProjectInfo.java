@@ -1,38 +1,26 @@
 package com.example.colabplatform.infoClasses;
 
+import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.enitities.Project;
-import com.example.colabplatform.exceptions.CollaboratorException;
 
 public class CollaboratorProjectInfo {
-    private boolean isAdmin;
+    private Collaborator collaborator;
     private Project project;
 
     public CollaboratorProjectInfo() {
     }
 
-    public CollaboratorProjectInfo(boolean isAdmin, Project project) {
-        this.isAdmin = isAdmin;
+    public CollaboratorProjectInfo(Collaborator collaborator, Project project) {
+        this.collaborator = collaborator;
         this.project = project;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public Collaborator getCollaborator() {
+        return collaborator;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public void setAdmin(Integer admin) {
-        if (admin == 1) {
-            this.isAdmin = true;
-        }
-        else if (admin == 0) {
-            this.isAdmin = false;
-        }
-        else {
-            throw new CollaboratorException("Invalid argument admin, must be 0 or 1");
-        }
+    public void setCollaborator(Collaborator collaborator) {
+        this.collaborator = collaborator;
     }
 
     public Project getProject() {

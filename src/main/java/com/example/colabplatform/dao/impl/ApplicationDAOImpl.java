@@ -92,9 +92,9 @@ public class ApplicationDAOImpl implements ApplicationDAO {
             application.setUserId(rs.getInt(2));
             application.setProjectId(rs.getInt(3));
             Timestamp timestamp = rs.getTimestamp(4);
-            application.setDay(timestamp.getDay());
-            application.setMonth(timestamp.getMonth());
-            application.setYear(timestamp.getYear());
+            application.setDay(timestamp.toLocalDateTime().getDayOfMonth());
+            application.setMonth(timestamp.toLocalDateTime().getMonthValue());
+            application.setYear(timestamp.toLocalDateTime().getYear());
             application.setStatus(Application.Status.valueOf(rs.getString(5)));
             applications.add(application);
         }

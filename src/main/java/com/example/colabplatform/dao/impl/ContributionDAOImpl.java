@@ -101,16 +101,16 @@ public class ContributionDAOImpl implements ContributionDAO {
             contribution.setProjectId(rs.getInt(3));
             contribution.setDescription(rs.getString(4));
             Timestamp timestamp = rs.getTimestamp(5);
-            contribution.setDay(timestamp.getDay());
-            contribution.setMonth(timestamp.getMonth());
-            contribution.setYear(timestamp.getYear());
+            contribution.setDay(timestamp.toLocalDateTime().getDayOfMonth());
+            contribution.setMonth(timestamp.toLocalDateTime().getMonthValue());
+            contribution.setYear(timestamp.toLocalDateTime().getYear());
             contribution.setValue(rs.getInt(6));
             contribution.setStatus(Contribution.Status.valueOf(rs.getString(7)));
             if (expectApprovalDate) {
                 timestamp = rs.getTimestamp(8);
-                contribution.setApproveDay(timestamp.getDay());
-                contribution.setApproveMonth(timestamp.getMonth());
-                contribution.setApproveYear(timestamp.getYear());
+                contribution.setApproveDay(timestamp.toLocalDateTime().getDayOfMonth());
+                contribution.setApproveMonth(timestamp.toLocalDateTime().getMonthValue());
+                contribution.setApproveYear(timestamp.toLocalDateTime().getYear());
             }
             contributions.add(contribution);
         }

@@ -41,7 +41,7 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
     @Override
     public List<Collaborator> getProjectCollaborators(Integer projectId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT c.COLLABORATORID, c.UserID, c.ProjectID, c.ISADMIN, c.DATEOFJOINING, c.RATING" +
+                "SELECT c.COLLABORATORID, c.UserID, c.ProjectID, c.ISADMIN, c.DATEOFJOINING, c.RATING, c.NUMBEROFCONTRIBUTIONS, c.TOTALVALUE" +
                         " FROM PROJECTCOLLABORATORS c WHERE c.ProjectID = ?");
         preparedStatement.setInt(1, projectId);
         ResultSet rs = preparedStatement.executeQuery();
@@ -67,7 +67,7 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
     @Override
     public Collaborator getByUserAndProjectId(Integer userId, Integer projectId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT c.COLLABORATORID, c.UserID, c.ProjectID, c.ISADMIN, c.DATEOFJOINING, c.RATING" +
+                "SELECT c.COLLABORATORID, c.UserID, c.ProjectID, c.ISADMIN, c.DATEOFJOINING, c.RATING, c.NUMBEROFCONTRIBUTIONS, c.TOTALVALUE" +
                         " FROM PROJECTCOLLABORATORS c WHERE c.USERID = ? AND c.ProjectID = ?");
         preparedStatement.setInt(1, userId);
         preparedStatement.setInt(2, projectId);
@@ -96,10 +96,12 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
         collaborator.setProjectId(rs.getInt(3));
         collaborator.setAdmin(rs.getInt(4));
         Timestamp timestamp = rs.getTimestamp(5);
-        collaborator.setDayOfJoining(timestamp.getDay());
-        collaborator.setMonthOfJoining(timestamp.getMonth());
-        collaborator.setYearOfJoining(timestamp.getYear());
+        collaborator.setDayOfJoining(timestamp.toLocalDateTime().getDayOfMonth());
+        collaborator.setMonthOfJoining(timestamp.toLocalDateTime().getMonthValue());
+        collaborator.setYearOfJoining(timestamp.toLocalDateTime().getYear());
         collaborator.setRating(rs.getInt(6));
+        collaborator.setNumberOfContributions(rs.getInt(7));
+        collaborator.setTotalValue(rs.getInt(8));
         return collaborator;
     }
 }
