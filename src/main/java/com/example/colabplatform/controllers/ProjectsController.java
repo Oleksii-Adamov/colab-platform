@@ -7,9 +7,11 @@ import com.example.colabplatform.exceptions.ProjectValidatorException;
 import com.example.colabplatform.exceptions.UserValidatorException;
 import com.example.colabplatform.exceptions.ValidationCommonsException;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
+import com.example.colabplatform.infoClasses.ProjectStats;
 import com.example.colabplatform.services.ProjectService;
 import com.example.colabplatform.validators.ProjectValidator;
 import com.example.colabplatform.validators.UserValidator;
+import com.example.colabplatform.validators.ValidationCommons;
 import com.google.gson.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,7 @@ public class ProjectsController extends AbstractController {
     private static final ProjectService projectService = new ProjectService();
     private static final ProjectValidator projectValidator = new ProjectValidator();
     private static final UserValidator userValidator = new UserValidator();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
@@ -167,9 +170,23 @@ public class ProjectsController extends AbstractController {
                 else {
                     jsonResponse = "{}";
                     this.responseOut.print(jsonResponse);
-//                    logger.info("Not found rating with this project AND user ID");
-//                    resp.sendError(404, "Not found rating with this project AND user ID");
+                    logger.info("Not found rating with this project AND user ID");
                 }
+            }
+            else if (requestMapping("/stats")) {
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                String beginningMonthStr = req.getParameter("beginningMonth");
+                Integer beginningMonth = ValidationCommons.getValidatedMonth(beginningMonthStr);
+                String beginningYearStr = req.getParameter("beginningYear");
+                Integer beginningYear = ValidationCommons.getValidatedYear(beginningYearStr);
+                String endMonthStr = req.getParameter("endMonth");
+                Integer endMonth = ValidationCommons.getValidatedMonth(endMonthStr);
+                String endYearStr = req.getParameter("endYear");
+                Integer endYear = ValidationCommons.getValidatedYear(endYearStr);
+                ProjectStats projectStats = new ProjectStats(projectService.getContributionStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear));
+                jsonResponse = new Gson().toJson(projectStats);
+                this.responseOut.print(jsonResponse);
             }
             else {
                 logger.warn("No such path " + req.getRequestURI());

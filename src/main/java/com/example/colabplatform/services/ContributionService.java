@@ -10,6 +10,7 @@ import com.example.colabplatform.infoClasses.ApplicationInfo;
 import com.example.colabplatform.infoClasses.ContributionInfo;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class ContributionService {
         }
         if (collaborator.getAdmin()) {
             status = Contribution.Status.APPROVED;
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            DAOFactory.getInstance().getProjectContributionsStatsByMonthDAO().countInContribution(projectId, timestamp.toLocalDateTime().getMonthValue(), timestamp.toLocalDateTime().getYear(), value);
         }
         return DAOFactory.getInstance().getContributionDAO().create(new Contribution(userId, projectId, description, value, status));
     }

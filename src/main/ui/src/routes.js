@@ -9,6 +9,7 @@ import PendingContributionsPage from "@/pages/PendingContributionsPage";
 import UpdateProjectPage from "@/pages/UpdateProjectPage";
 import ProfilePage from "@/pages/ProfilePage";
 import UpdateProfilePage from "@/pages/UpdateProfilePage";
+import ProjectStatsPage from "@/pages/ProjectStatsPage";
 
 
 export default [
@@ -62,8 +63,12 @@ export default [
     {
         path: '/edit-profile',
         name: 'edit-profile-page',
-        component: UpdateProfilePage,
-        props: true,
+        component: UpdateProfilePage
+    },
+    {
+        path: '/projects/stats',
+        name: 'project-stats-page',
+        component: ProjectStatsPage
     },
     {
         path: '/',

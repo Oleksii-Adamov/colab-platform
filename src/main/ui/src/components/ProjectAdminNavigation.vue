@@ -5,6 +5,7 @@
       <router-link :to="{ path: '/projects/' + this.getProjectId()}">Project home</router-link>
       <router-link :to="{ name: 'applications-page'}">Pending applications</router-link>
       <router-link :to="{ name: 'pending-contributions-page'}">Pending contributions</router-link>
+      <router-link :to="{ name: 'project-stats-page'}">Stats</router-link>
       <router-link :to="{ name: 'edit-project-page'}">Edit project</router-link>
     </div>
   </nav>

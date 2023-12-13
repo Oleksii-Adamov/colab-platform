@@ -26,6 +26,12 @@ export async function getUserRatingOfProject(projectId) {
         '&userId='+ localStorage.getItem('userId'));
 }
 
+export async function getProjectStats(projectId, beginningMonth, beginningYear, endMonth, endYear) {
+    return getRequest('/api/projects/stats?projectId=' + projectId +
+        '&beginningMonth='+ beginningMonth + '&beginningYear='+ beginningYear +
+        '&endMonth='+ endMonth + '&endYear='+ endYear);
+}
+
 export async function createProject(projectName, projectDescription, selectedTags, selectedSkills, action) {
     return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'),
         {'projectDescription': projectDescription, 'selectedTags': selectedTags,

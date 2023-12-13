@@ -4,6 +4,7 @@ import com.example.colabplatform.dao.DAOFactory;
 import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
+import com.example.colabplatform.infoClasses.ContributionsStats;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -48,5 +49,9 @@ public class ProjectService {
 
     public void updateProject(Integer projectId, String newName, String newProjectDescription, List<Integer> newTagsIds, List<Integer> newSkillsIds) throws SQLException {
         DAOFactory.getInstance().getProjectDAO().updateProject(new Project(projectId, newName, newProjectDescription), newTagsIds, newSkillsIds);
+    }
+
+    public ContributionsStats getContributionStatsInRange(Integer projectId, Integer beginningMonth, Integer beginningYear, Integer endMonth, Integer endYear) throws SQLException {
+        return DAOFactory.getInstance().getProjectContributionsStatsByMonthDAO().getStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear);
     }
 }
