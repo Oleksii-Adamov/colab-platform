@@ -6,12 +6,22 @@ public class User implements Entity {
     private String keycloakId;
     private String fullName;
 
+    private String bio;
+
     public User() {
     }
 
     public User(String keycloakId, String fullName) {
         this.keycloakId = keycloakId;
         this.fullName = fullName;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public Integer getId() {
