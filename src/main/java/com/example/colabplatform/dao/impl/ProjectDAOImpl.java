@@ -61,7 +61,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<Project> getProjects() throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT pr.ProjectID, pr.ProjectName FROM Projects pr");
+                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED FROM Projects pr");
         ResultSet rs = preparedStatement.executeQuery();
         ConnectionFactory.instance().releaseConnection();
         return projectsFromResultSet(rs);
@@ -70,7 +70,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<CollaboratorProjectInfo> getProjectsUserIn(Integer userId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT pr.ProjectID, pr.ProjectName,cb.ISADMIN FROM Projects pr" +
+                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED, cb.ISADMIN FROM Projects pr" +
                         " INNER JOIN PROJECTCOLLABORATORS cb on pr.PROJECTID = cb.PROJECTID" +
                         " WHERE cb.USERID = ?" +
                         " ORDER BY cb.ISADMIN DESC");
@@ -81,7 +81,7 @@ public class ProjectDAOImpl implements ProjectDAO {
         while (rs.next()) {
             CollaboratorProjectInfo collaboratorProjectInfo = new CollaboratorProjectInfo();
             collaboratorProjectInfo.setProject(projectShortInfoFromResultSet(rs));
-            collaboratorProjectInfo.setAdmin(rs.getInt(3));
+            collaboratorProjectInfo.setAdmin(rs.getInt(4));
             projects.add(collaboratorProjectInfo);
         }
         return projects;
@@ -90,7 +90,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public List<Project> getProjectsCreatedByUser(Integer userId) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT pr.ProjectID, pr.ProjectName FROM Projects pr WHERE pr.CREATORUSERID = ?");
+                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED FROM Projects pr WHERE pr.CREATORUSERID = ?");
         preparedStatement.setInt(1, userId);
         ResultSet rs = preparedStatement.executeQuery();
         ConnectionFactory.instance().releaseConnection();
@@ -109,6 +109,7 @@ public class ProjectDAOImpl implements ProjectDAO {
         Project project = new Project();
         project.setId(rs.getInt(1));
         project.setName(rs.getString(2));
+        project.setFinished(rs.getInt(3));
         return project;
     }
 
@@ -117,7 +118,7 @@ public class ProjectDAOImpl implements ProjectDAO {
     public Project getProjectInfo(Integer projectId) throws SQLException {
         Project project = new Project();
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT P.ProjectName, P.PROJECTDESCRIPTION, P.RATING, P.NUMBEROFRATINGS" +
+                "SELECT P.ProjectName, P.PROJECTDESCRIPTION, P.RATING, P.NUMBEROFRATINGS, P.ISFINISHED" +
                         " FROM Projects P" +
                         " WHERE P.PROJECTID = ?");
         preparedStatement.setInt(1, projectId);
@@ -127,6 +128,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             project.setDescription(rs.getString("PROJECTDESCRIPTION"));
             project.setRating(rs.getFloat("RATING"));
             project.setNumberOfRatings(rs.getInt("NUMBEROFRATINGS"));
+            project.setFinished(rs.getInt("ISFINISHED"));
         }
 
         preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
@@ -159,37 +161,135 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
     @Override
     public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
+        // check if rating of this user already exists
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
-                prepareStatement("UPDATE Projects P" +
-                        " SET P.rating = (P.rating * P.NUMBEROFRATINGS + ?) / (P.NUMBEROFRATINGS + 1)," +
-                        " P.NUMBEROFRATINGS = P.NUMBEROFRATINGS + 1" +
-                        " WHERE P.ProjectID = ?");
-
-        preparedStatement.setInt(1, rating);
-        preparedStatement.setInt(2, projectId);
-
-        int rowsAffected = preparedStatement.executeUpdate();
-
-        if (rowsAffected < 1) {
-            throw new ApplicationDAOException("Project rating update failed");
-        }
-        // create new rating or update if exists
-        preparedStatement = ConnectionFactory.instance().getConnection()
-                .prepareStatement("MERGE INTO PROJECTRATINGS PR INNER JOIN Projects P ON PR.PROJECTID = P.PROJECTID" +
-                        " USING DUAL" +
-                        " ON (PR.PROJECTID = ? AND PR.USERID = ?)" +
-                        " WHEN MATCHED THEN" +
-                        " UPDATE SET P.RATING = (P.RATING * P.NUMBEROFRATINGS - PR.RATING + ?) / P.NUMBEROFRATINGS, PR.RATING = ?" +
-                        " WHEN NOT MATCHED THEN" +
-                        " INSERT (PR.PROJECTID, PR.USERID, PR.RATING)" +
-                        " VALUES (?, ?, ?)");
+                prepareStatement("SELECT PR.RATING FROM PROJECTRATINGS PR" +
+                        " WHERE PR.ProjectID = ? AND PR.USERID = ?");
         preparedStatement.setInt(1, projectId);
         preparedStatement.setInt(2, userId);
-        preparedStatement.setInt(3, rating);
-        preparedStatement.setInt(4, rating);
-        preparedStatement.setInt(4, projectId);
-        preparedStatement.setInt(5, userId);
-        preparedStatement.setDouble(6, rating);
-        preparedStatement.executeUpdate();
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            Integer prevRating = rs.getInt(1);
+            // update rating entry
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("UPDATE PROJECTRATINGS PR" +
+                            " SET PR.RATING = ?" +
+                            " WHERE PR.ProjectID = ? AND PR.USERID = ?");
+            preparedStatement.setInt(1, rating);
+            preparedStatement.setInt(2, projectId);
+            preparedStatement.setInt(3, userId);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected < 1) {
+                throw new ProjectDAOException("Project rating update failed");
+            }
+            // update average rating
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("UPDATE Projects P" +
+                            " SET P.rating = (P.rating * P.NUMBEROFRATINGS + ?) / P.NUMBEROFRATINGS" +
+                            " WHERE P.ProjectID = ?");
+            preparedStatement.setInt(1, rating - prevRating);
+            preparedStatement.setInt(2, projectId);
+            rowsAffected = preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
+            if (rowsAffected < 1) {
+                throw new ProjectDAOException("Project average rating update failed");
+            }
+        }
+        else {
+            // create new entry
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("INSERT INTO PROJECTRATINGS (ProjectID, USERID, RATING)" +
+                            " VALUES(?, ?, ?)");
+            preparedStatement.setInt(1, projectId);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.setInt(3, rating);
+            preparedStatement.executeUpdate();
+            // update average rating and count
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("UPDATE Projects P" +
+                            " SET P.rating = (P.rating * P.NUMBEROFRATINGS + ?) / (P.NUMBEROFRATINGS + 1)," +
+                            " P.NUMBEROFRATINGS = P.NUMBEROFRATINGS + 1" +
+                            " WHERE P.ProjectID = ?");
+            preparedStatement.setInt(1, rating);
+            preparedStatement.setInt(2, projectId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
+            if (rowsAffected < 1) {
+                throw new ProjectDAOException("Project average rating update failed");
+            }
+        }
+    }
+
+    @Override
+    public Integer getUserRating(Integer projectId, Integer userId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("SELECT PR.RATING FROM PROJECTRATINGS PR" +
+                        " WHERE PR.ProjectID = ? AND PR.USERID = ?");
+        preparedStatement.setInt(1, projectId);
+        preparedStatement.setInt(2, userId);
+        ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
+        if (rs.next()) {
+            Integer rating = rs.getInt(1);
+            return rating;
+        }
+        else {
+            return null;
+        }
+    }
+    @Override
+    public void markAsFinished(Integer projectId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("UPDATE Projects P" +
+                        " SET P.ISFINISHED = 1" +
+                        " WHERE P.ProjectID = ?");
+        preparedStatement.setInt(1, projectId);
+        Integer rowsAffected = preparedStatement.executeUpdate();
+        ConnectionFactory.instance().releaseConnection();
+        if (rowsAffected < 1) {
+            throw new ProjectDAOException("Project markAsFinished update failed");
+        }
+    }
+    @Override
+    public void updateProject(Project newProjectInfo, List<Integer> newTagsIds, List<Integer> newSkillsIds) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("UPDATE Projects P" +
+                                " SET P.PROJECTNAME = ?, P.PROJECTDESCRIPTION = ?" +
+                                " WHERE P.ProjectID = ?");
+        preparedStatement.setString(1, newProjectInfo.getName());
+        preparedStatement.setString(2, newProjectInfo.getDescription());
+        preparedStatement.setInt(3, newProjectInfo.getId());
+        Integer rowsAffected = preparedStatement.executeUpdate();
+        if (rowsAffected < 1) {
+            throw new ProjectDAOException("Project update failed");
+        }
+
+        PreparedStatement deleteStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "DELETE FROM PROJECTTAGSASSIGNMENTS WHERE PROJECTID = ?");
+        deleteStatement.setInt(1, newProjectInfo.getId());
+        deleteStatement.executeUpdate();
+        PreparedStatement insertStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("INSERT INTO PROJECTTAGSASSIGNMENTS (PROJECTID, TAGID) VALUES(?, ?)");
+        for (int tagId : newTagsIds) {
+            insertStatement.setInt(1, newProjectInfo.getId());
+            insertStatement.setInt(2, tagId);
+            insertStatement.addBatch();
+        }
+        insertStatement.executeBatch();
+
+        deleteStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "DELETE FROM PROJECTSKILLASSIGNMENTS WHERE PROJECTID = ?");
+        deleteStatement.setInt(1, newProjectInfo.getId());
+        deleteStatement.executeUpdate();
+        insertStatement = ConnectionFactory.instance().getConnection()
+                .prepareStatement("INSERT INTO PROJECTSKILLASSIGNMENTS (PROJECTID, SKILLID) VALUES(?, ?)");
+        for (int skillId : newSkillsIds) {
+            insertStatement.setInt(1, newProjectInfo.getId());
+            insertStatement.setInt(2, skillId);
+            insertStatement.addBatch();
+        }
+        insertStatement.executeBatch();
+        ConnectionFactory.instance().releaseConnection();
     }
 }

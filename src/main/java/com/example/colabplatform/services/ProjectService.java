@@ -37,4 +37,16 @@ public class ProjectService {
     public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
         DAOFactory.getInstance().getProjectDAO().rateProject(projectId, userId, rating);
     }
+
+    public Integer getUserRating(Integer projectId, Integer userId) throws SQLException {
+        return DAOFactory.getInstance().getProjectDAO().getUserRating(projectId, userId);
+    }
+
+    public void markAsFinished(Integer projectId) throws SQLException {
+        DAOFactory.getInstance().getProjectDAO().markAsFinished(projectId);
+    }
+
+    public void updateProject(Integer projectId, String newName, String newProjectDescription, List<Integer> newTagsIds, List<Integer> newSkillsIds) throws SQLException {
+        DAOFactory.getInstance().getProjectDAO().updateProject(new Project(projectId, newName, newProjectDescription), newTagsIds, newSkillsIds);
+    }
 }

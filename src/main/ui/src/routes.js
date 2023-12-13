@@ -6,6 +6,7 @@ import ProjectSearchPage from "@/pages/ProjectSearchPage";
 import ContributePage from "@/pages/ContributePage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import PendingContributionsPage from "@/pages/PendingContributionsPage";
+import UpdateProjectPage from "@/pages/UpdateProjectPage";
 
 
 export default [
@@ -44,6 +45,11 @@ export default [
         path: '/projects/pending-contributions',
         name: 'pending-contributions-page',
         component: PendingContributionsPage,
+    },
+    {
+        path: '/projects/edit',
+        name: 'edit-project-page',
+        component: UpdateProjectPage,
     },
     {
         path: '/',

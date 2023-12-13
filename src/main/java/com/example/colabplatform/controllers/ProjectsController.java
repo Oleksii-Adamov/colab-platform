@@ -63,6 +63,31 @@ public class ProjectsController extends AbstractController {
                 Integer rating = projectValidator.getValidatedProjectRating(ratingString);
                 projectService.rateProject(projectId, userId, rating);
             }
+            else if (requestMapping("/update")) {
+                String projectIdString = req.getParameter("projectId");
+                String name = req.getParameter("name");
+                String requestData = req.getHeader("data");
+                JsonObject requestDataJsonObject = new JsonParser().parse(requestData).getAsJsonObject();
+                String projectDescription = requestDataJsonObject.get("projectDescription").getAsString();
+                JsonArray tagsJsonArray = requestDataJsonObject.get("selectedTags").getAsJsonArray();
+                List<Integer> tagsIds = new ArrayList<>();
+                for (int i = 0; i < tagsJsonArray.size(); i++) {
+                    tagsIds.add(tagsJsonArray.get(i).getAsInt());
+                }
+                JsonArray skillsJsonArray = requestDataJsonObject.get("selectedSkills").getAsJsonArray();
+                List<Integer> skillsIds = new ArrayList<>();
+                for (int i = 0; i < skillsJsonArray.size(); i++) {
+                    skillsIds.add(skillsJsonArray.get(i).getAsInt());
+                }
+                projectValidator.validateName(name);
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                projectService.updateProject(projectId, name, projectDescription, tagsIds, skillsIds);
+            }
+            else if (requestMapping("/finish")) {
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                projectService.markAsFinished(projectId);
+            }
             else {
                 logger.warn("No such path " + req.getRequestURI());
                 resp.sendError(404, "No such path " + req.getRequestURI());
@@ -126,6 +151,24 @@ public class ProjectsController extends AbstractController {
                     logger.info(msg);
                     jsonResponse = String.format("{\"msg\": \"%s\"}", msg);
                     this.responseOut.print(jsonResponse);
+                }
+            }
+            else if (requestMapping("/user-rating")) {
+                logger.info("/user-rating");
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                String userIdString = req.getParameter("userId");
+                Integer userId = userValidator.getValidatedUserId(userIdString);
+                Integer rating = projectService.getUserRating(projectId, userId);
+                if (rating != null) {
+                    jsonResponse = String.format("{\"rating\": %d}", rating);
+                    this.responseOut.print(jsonResponse);
+                }
+                else {
+                    jsonResponse = "{}";
+                    this.responseOut.print(jsonResponse);
+//                    logger.info("Not found rating with this project AND user ID");
+//                    resp.sendError(404, "Not found rating with this project AND user ID");
                 }
             }
             else {

@@ -17,4 +17,10 @@ public interface ProjectDAO {
     List<CollaboratorProjectInfo> getProjectsUserIn(Integer userId) throws SQLException;
 
     void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException;
+
+    Integer getUserRating(Integer projectId, Integer userId) throws SQLException;
+
+    void markAsFinished(Integer projectId) throws SQLException;
+
+    void updateProject(Project newProjectInfo, List<Integer> newTagsIds, List<Integer> newSkillsIds) throws SQLException;
 }

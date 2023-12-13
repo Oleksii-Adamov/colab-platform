@@ -6,6 +6,7 @@
           <li v-for="item in projects" :key="item.project.id">
             <router-link :to="{ name: 'project-page', params: { id: item.project.id} }">
               {{ item.project.name }}
+              <span v-if="item.project.isFinished === true"> (Finished)</span>
               <span v-if="item.isAdmin === true" style="color: red;"> | Administrating</span>
             </router-link>
           </li>

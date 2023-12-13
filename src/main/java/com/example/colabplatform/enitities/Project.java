@@ -1,5 +1,7 @@
 package com.example.colabplatform.enitities;
 
+import com.example.colabplatform.exceptions.ProjectException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,8 @@ public class Project implements Entity {
 
     private Integer numberOfRatings;
 
+    private Boolean isFinished;
+
     public Project() {
     }
 
@@ -31,6 +35,32 @@ public class Project implements Entity {
         this.name = name;
         this.creatorUserID = creatorUserID;
         this.description = description;
+    }
+
+    public Project(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    public Boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(Boolean finished) {
+        isFinished = finished;
+    }
+
+    public void setFinished(Integer finished) {
+        if (finished == 1) {
+            this.isFinished = true;
+        }
+        else if (finished == 0) {
+            this.isFinished = false;
+        }
+        else {
+            throw new ProjectException("Invalid argument finished, must be 0 or 1");
+        }
     }
 
     public Float getRating() {

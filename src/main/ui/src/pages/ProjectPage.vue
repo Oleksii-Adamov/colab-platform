@@ -6,10 +6,12 @@
   <template v-if="project !== null && project !== undefined">
     <!--    <ProjectAdminNavigation v-if="collaborator !== null && collaborator.isAdmin === true"></ProjectAdminNavigation>-->
     <h1>{{this.project.name}}</h1>
+    <h2 v-if="this.project.isFinished === true">Finished</h2>
     <h2 v-if="this.project.numberOfRatings && this.project.numberOfRatings > 0">Project rating (average from user's): {{this.project.rating}}/5 (based on {{this.project.numberOfRatings}} votes)</h2>
     <h2 v-else>This project doesn't yet have rating</h2>
     <div style="margin-bottom: 20px">
-      <h2 style="display: inline">Rate project: </h2>
+      <h2 v-if="this.is_user_rated_project === true" style="display: inline">Your rating of this project: </h2>
+      <h2 v-else style="display: inline">Rate project: </h2>
       <div class="star-rating">
         <span class="star" v-for="(star, index) in 5" :key="index" @click="rateProject(index + 1)" :class="{ 'filled': index < selectedStars }">&#9733;</span>
       </div>
@@ -18,11 +20,9 @@
       <button @click="apply">Apply</button>
       <p v-if="applied === true" style="color: green;">Applied</p>
     </template>
-    <button v-if="is_collaborator === true" @click="contribute">Contribute</button>
-<!--    <router-link v-if="is_collaborator === true" :to="{ path: '/contribute?projectId=' + this.id}"> Contribute</router-link>-->
-<!--    <router-link v-if="is_collaborator === true" :to="{ name: 'contribute-page', params: {projectId: this.project.id} }"> Contribute</router-link>-->
+    <button v-if="is_collaborator === true" @click="contribute" style="font-size: 24px">Contribute</button>
     <h2>Description</h2>
-    <div>{{this.project.projectDescription}}</div>
+    <div>{{this.project.description}}</div>
     <h2>Tags:</h2>
     <div v-for="tag in this.project.tags" :key="tag.id">
       <div>{{tag.name}}</div>
@@ -57,7 +57,7 @@
 
 <script>
 
-import {getProjectInfo, authToProject, rateProject} from "@/services/ProjectService";
+import {getProjectInfo, authToProject, rateProject, getUserRatingOfProject} from "@/services/ProjectService";
 import {
   approveApplication,
   createApplication,
@@ -81,7 +81,8 @@ export default {
       is_collaborator: null,
       is_admin: null,
       applied: false,
-      selectedStars: 0
+      selectedStars: 0,
+      is_user_rated_project: false
     }
   },
   props:{
@@ -115,6 +116,7 @@ export default {
       this.selectedStars = stars;
       rateProject(this.id, this.selectedStars, () => {
         console.log('got rate response')
+        this.is_user_rated_project = true
         getProjectInfo(this.id).then(response => {
           console.log(response)
           this.project = response
@@ -133,16 +135,39 @@ export default {
       else {
         this.collaborator = response
         this.is_collaborator = true
+        this.is_admin = this.collaborator.isAdmin
       }
-      this.is_admin = this.collaborator.isAdmin
       getProjectInfo(this.id).then(response => {
-        console.log(response)
-        this.project = response
+        if (response) {
+          console.log(response)
+          this.project = response
+          getUserRatingOfProject(this.id).then(response => {
+            console.log(response)
+            if (response && response.rating) {
+              this.selectedStars = response.rating
+              this.is_user_rated_project = true
+            }
+            getProjectApprovedContributions(this.id).then(response => {
+              console.log(response)
+              this.contributions = response
+            });
+          });
+        }
+        else {
+          this.$router.push({path: '/my-projects'});
+        }
       });
-      getProjectApprovedContributions(this.id).then(response => {
-        console.log(response)
-        this.contributions = response
-      });
+      // getProjectApprovedContributions(this.id).then(response => {
+      //   console.log(response)
+      //   this.contributions = response
+      // });
+      // getUserRatingOfProject(this.id).then(response => {
+      //   console.log(response)
+      //   if (response.rating) {
+      //     this.selectedStars = response.rating
+      //     this.is_user_rated_project = true
+      //   }
+      // });
     }
     )
   }

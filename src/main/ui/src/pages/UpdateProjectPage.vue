@@ -1,9 +1,11 @@
 <template>
   <UserNavigation></UserNavigation>
+  <ProjectAdminNavigation></ProjectAdminNavigation>
   <div id="form-main-container">
     <div id="form-area">
+      <button v-if="this.isFinished === false" @click="markAsFinished" style="font-size: 24px; margin-bottom: 20px;">Mark as finished</button>
       <div id="form-title">
-        Create your project
+        Update project
       </div>
       <div id="form-body">
         <div>
@@ -24,7 +26,7 @@
               <div class="checkbox-wrapper-1">
                 <label class="form-label"><h2>Project tags</h2></label>
                 <div v-for="tag in tags" :key="tag.id">
-                <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedTags" :value="tag.id"/>
+                  <input style="display: inline-block;" aria-hidden="true" type="checkbox" v-model="selectedTags" :value="tag.id"/>
                   <label style="display: inline-block;">{{tag.name}}</label>
                 </div>
               </div>
@@ -42,7 +44,7 @@
         </div>
         <div>
           <div class="center-text button-area">
-            <button type="button" class="btn btn-send" @click="submitCreateProject">Create</button>
+            <button type="button" class="btn btn-send" @click="submitUpdateProject">Update</button>
           </div>
         </div>
       </div>
@@ -51,16 +53,14 @@
 </template>
 
 <script>
-import {createProject} from "@/services/ProjectService";
+import ProjectAdminNavigation from "@/components/ProjectAdminNavigation";
+import {getProjectInfo, markAsFinished, updateProject} from "@/services/ProjectService";
 import {getTags} from "@/services/tagService";
 import {getSkills} from "@/services/skillService";
 import UserNavigation from "@/components/UserNavigation";
-
 export default {
-  name: "CreateCoursePage",
-  components: {
-    UserNavigation
-  },
+  name: "UpdateProjectPage",
+  components: {UserNavigation, ProjectAdminNavigation},
   data() {
     return {
       projectName: "",
@@ -68,32 +68,69 @@ export default {
       tags: [],
       selectedTags: [],
       skills: [],
-      selectedSkills: []
+      selectedSkills: [],
+      isFinished: false
     }
   },
   methods: {
-    submitCreateProject() {
+    submitUpdateProject() {
       if (this.projectName !== "") {
-        createProject(this.projectName, this.projectDescription, this.selectedTags, this.selectedSkills, () => {
+        if (localStorage.getItem('projectId')) {
+          updateProject(localStorage.getItem('projectId'), this.projectName, this.projectDescription, this.selectedTags, this.selectedSkills, () => {
+            this.$router.push({path: '/projects/' + localStorage.getItem('projectId')});
+          });
+        }
+        else {
+          alert("Project session expired")
           this.$router.push({path: '/my-projects'});
-        });
+        }
       } else {
         alert("Project name field must be filled");
       }
-      },
-      getPossibleTagsAndSkills() {
-        getTags().then(response => {
-          console.log(response)
-          this.tags = response
-        })
-        getSkills().then(response => {
-          console.log(response)
-          this.skills = response
-        })
-      }
     },
+    getPossibleTagsAndSkills() {
+      getTags().then(response => {
+        console.log(response)
+        this.tags = response
+      })
+      getSkills().then(response => {
+        console.log(response)
+        this.skills = response
+      })
+    },
+    markAsFinished() {
+      if (localStorage.getItem('projectId')) {
+        markAsFinished(localStorage.getItem('projectId'),
+            () => {this.$router.push({path: '/projects/' + localStorage.getItem('projectId')})})
+      }
+      else {
+        alert("Project session expired")
+        this.$router.push({path: '/my-projects'});
+      }
+    }
+  },
   mounted() {
-    this.getPossibleTagsAndSkills();
+    const projectId = localStorage.getItem('projectId')
+    if (projectId) {
+      getProjectInfo(projectId).then(response => {
+        console.log(response)
+        const project = response
+        this.projectName = project.name
+        this.projectDescription = project.description
+        this.isFinished = project.isFinished
+        for (const tag of project.tags) {
+          this.selectedTags.push(tag.id)
+        }
+        for (const skill of project.skills) {
+          this.selectedSkills.push(skill.id)
+        }
+        this.getPossibleTagsAndSkills();
+      })
+    }
+    else {
+      alert("Project session expired")
+      this.$router.push({path: '/my-projects'});
+    }
   }
 }
 </script>
