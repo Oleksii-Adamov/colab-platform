@@ -53,9 +53,10 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
-    public List<Project> getProjects() throws SQLException {
+    public List<Project> getUnfinishedProjects() throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED FROM Projects pr");
+                "SELECT pr.ProjectID, pr.ProjectName, pr.ISFINISHED FROM Projects pr" +
+                        " WHERE pr.ISFINISHED = 0");
         ResultSet rs = preparedStatement.executeQuery();
         ConnectionFactory.instance().releaseConnection();
         return projectsFromResultSet(rs);
@@ -169,20 +170,22 @@ public class ProjectDAOImpl implements ProjectDAO {
     }
 
     @Override
-    public List<Project> getProjectsFullInfo() throws SQLException {
+    public List<Project> getNotFinishedProjectsFullInfo() throws SQLException {
         List<Project> projects = new ArrayList<>();
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT P.ProjectName, P.PROJECTDESCRIPTION, P.RATING, P.NUMBEROFRATINGS, P.ISFINISHED, P.PROJECTID" +
-                        " FROM Projects P");
-        ResultSet rs = preparedStatement.executeQuery();
-        while (rs.next()) {
+                        " FROM Projects P" +
+                        " WHERE P.ISFINISHED = 0");
+
+        ResultSet projectsrs = preparedStatement.executeQuery();
+        while (projectsrs.next()) {
             Project project = new Project();
-            project.setName(rs.getString("ProjectName"));
-            project.setDescription(rs.getString("PROJECTDESCRIPTION"));
-            project.setRating(rs.getFloat("RATING"));
-            project.setNumberOfRatings(rs.getInt("NUMBEROFRATINGS"));
-            project.setFinished(rs.getInt("ISFINISHED"));
-            project.setId(rs.getInt("PROJECTID"));
+            project.setName(projectsrs.getString("ProjectName"));
+            project.setDescription(projectsrs.getString("PROJECTDESCRIPTION"));
+            project.setRating(projectsrs.getFloat("RATING"));
+            project.setNumberOfRatings(projectsrs.getInt("NUMBEROFRATINGS"));
+            project.setFinished(projectsrs.getInt("ISFINISHED"));
+            project.setId(projectsrs.getInt("PROJECTID"));
             preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                     "SELECT T.TAGID, T.TAGNAME" +
                             " FROM Projects P" +
@@ -190,7 +193,7 @@ public class ProjectDAOImpl implements ProjectDAO {
                             " INNER JOIN TAGS T on PT.TAGID = T.TAGID" +
                             " WHERE P.PROJECTID = ?");
             preparedStatement.setInt(1, project.getId());
-            rs = preparedStatement.executeQuery();
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 project.getTags().add(new Tag(rs.getInt("TAGID"),rs.getString("TAGNAME")));
             }

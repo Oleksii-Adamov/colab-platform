@@ -4,14 +4,6 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
     <servlet>
-        <servlet-name>TestController</servlet-name>
-        <servlet-class>com.example.colabplatform.controllers.TestController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TestController</servlet-name>
-        <url-pattern>/api/test</url-pattern>
-    </servlet-mapping>
-    <servlet>
         <servlet-name>UserController</servlet-name>
         <servlet-class>com.example.colabplatform.controllers.UserController</servlet-class>
     </servlet>

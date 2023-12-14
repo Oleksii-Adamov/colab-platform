@@ -1,17 +1,22 @@
 package com.example.colabplatform.services;
 
 import com.example.colabplatform.dao.DAOFactory;
-import com.example.colabplatform.enitities.Collaborator;
-import com.example.colabplatform.enitities.Contribution;
-import com.example.colabplatform.enitities.Project;
+import com.example.colabplatform.dao.impl.ProjectNewUsersStatsByMonthDAOImpl;
+import com.example.colabplatform.enitities.*;
 import com.example.colabplatform.infoClasses.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProjectService {
+
+    protected static final Logger logger = LogManager.getLogger(ProjectService.class);
     public Integer create(String name, Integer creatorUserId, String projectDescription, List<Integer> tagsIds,
                           List<Integer> skillsIds) throws SQLException {
         Integer createdProjectId = DAOFactory.getInstance().getProjectDAO().create(new Project(name, creatorUserId, projectDescription),
@@ -47,7 +52,61 @@ public class ProjectService {
     }
 
     public List<Project> getRecommendedProjects(Integer userId) throws SQLException {
-        return DAOFactory.getInstance().getProjectDAO().getProjects();
+        List<Project> projects = DAOFactory.getInstance().getProjectDAO().getNotFinishedProjectsFullInfo();
+        User user = DAOFactory.getInstance().getUserDAO().getUserInfo(userId);
+        logger.info("User tags:");
+        logger.info(user.getTags());
+        logger.info(user.getSkills());
+        List<ProjectScore> projectScores = new ArrayList<>();
+        logger.info("Not finished projects:");
+        for (Project project : projects) {
+            logger.info(project.getName());
+//            Project projectFullInfo = DAOFactory.getInstance().getProjectDAO().getProjectInfo(project.getId());
+            logger.info(project.getTags());
+            logger.info(project.getSkills());
+            double tagSimilarity = calculateSimilarity(user.getTags(), project.getTags(), true);
+            double skillSimilarity = calculateSimilarity(user.getSkills(), project.getSkills(), false);
+            double totalSimilarity = (2 * tagSimilarity + skillSimilarity) / 3; // More weight to tags (interests)
+            logger.info(tagSimilarity);
+            logger.info(skillSimilarity);
+            logger.info(totalSimilarity);
+            projectScores.add(new ProjectScore(project, totalSimilarity));
+        }
+
+        // Sort projects by similarity score
+        Collections.sort(projectScores, Comparator.comparingDouble(ProjectScore::getSimilarity).reversed());
+        logger.info("recommendedProjects:");
+        List<Project> recommendedProjects = new ArrayList<>();
+        for (ProjectScore ps : projectScores) {
+            recommendedProjects.add(ps.getProject());
+            logger.info(ps.getProject().getName());
+        }
+
+        return recommendedProjects;
+    }
+
+    private double calculateSimilarity(List<? extends Entity> userEntities, List<? extends Entity> projectEntities, boolean isTags) {
+        List<? extends Entity> intersection = new ArrayList<>(userEntities);
+        intersection.retainAll(projectEntities);
+        return (double) intersection.size() / (isTags ? 6 : 4);
+    }
+
+    private static class ProjectScore {
+        private Project project;
+        private double similarity;
+
+        public ProjectScore(Project project, double similarity) {
+            this.project = project;
+            this.similarity = similarity;
+        }
+
+        public Project getProject() {
+            return project;
+        }
+
+        public double getSimilarity() {
+            return similarity;
+        }
     }
 
     public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
