@@ -17,9 +17,10 @@ public class ApplicationService {
     public void approve(Integer applicationId, Integer userId, Integer projectId) throws SQLException {
         DAOFactory.getInstance().getApplicationDAO().approve(applicationId, userId, projectId);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInUser(projectId,
-                timestamp.toLocalDateTime().getMonthValue(),
-                timestamp.toLocalDateTime().getYear());
+        Integer month = timestamp.toLocalDateTime().getMonthValue();
+        Integer year = timestamp.toLocalDateTime().getYear();
+        DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInUser(projectId, month, year);
+        DAOFactory.getInstance().getNewCollaboratorsStatsByMonthDAO().countInUser(month, year);
     }
 
     public void reject(Integer applicationId) throws SQLException {

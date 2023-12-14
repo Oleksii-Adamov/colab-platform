@@ -78,6 +78,7 @@ public class ContributionService {
         logger.info(year);
         DAOFactory.getInstance().getProjectContributionsStatsByMonthDAO().countInContribution(contribution.getProjectId(), month, year, contribution.getValue());
         logger.info("usual counted in contrib");
+
         Collaborator collaborator = DAOFactory.getInstance().getCollaboratorDAO().getByUserAndProjectId(contribution.getUserId(), contribution.getProjectId());
         logger.info(collaborator.getMonthOfJoining());
         logger.info(collaborator.getYearOfJoining());
@@ -85,6 +86,16 @@ public class ContributionService {
             logger.info("calling getProjectNewUsersStatsByMonthDAO().countInContribution");
             DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInContribution(contribution.getProjectId(), month, year, contribution.getValue());
             logger.info("counted in getProjectNewUsersStatsByMonthDAO().countInContribution");
+            DAOFactory.getInstance().getNewCollaboratorsStatsByMonthDAO().countInContribution(month, year, contribution.getValue());
         }
+
+        User user = DAOFactory.getInstance().getUserDAO().getUserInfo(contribution.getUserId());
+        if (Objects.equals(user.getMonthOfJoining(), month) && Objects.equals(user.getYearOfJoining(), year)) {
+            logger.info("calling getNewUsersStatsByMonthDAO().countInContribution");
+            DAOFactory.getInstance().getNewUsersStatsByMonthDAO().countInContribution(month, year, contribution.getValue());
+            logger.info("counted in getNewUsersStatsByMonthDAO().countInContribution");
+        }
+
+        DAOFactory.getInstance().getProjectsStatsByMonthDAO().countInContribution(month, year);
     }
 }

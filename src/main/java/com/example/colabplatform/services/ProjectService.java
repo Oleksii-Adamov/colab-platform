@@ -22,9 +22,14 @@ public class ProjectService {
         DAOFactory.getInstance().getCollaboratorDAO().makeAdmin(creatorCollaboratorId);
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Integer month = timestamp.toLocalDateTime().getMonthValue();
+        Integer year = timestamp.toLocalDateTime().getYear();
         DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInUser(createdProjectId,
-                timestamp.toLocalDateTime().getMonthValue(),
-                timestamp.toLocalDateTime().getYear());
+                month, year);
+
+        DAOFactory.getInstance().getProjectsStatsByMonthDAO().countInCreated(month, year);
+
+        DAOFactory.getInstance().getNewCollaboratorsStatsByMonthDAO().countInUser(month, year);
 
         return  createdProjectId;
     }
@@ -55,6 +60,11 @@ public class ProjectService {
 
     public void markAsFinished(Integer projectId) throws SQLException {
         DAOFactory.getInstance().getProjectDAO().markAsFinished(projectId);
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Integer month = timestamp.toLocalDateTime().getMonthValue();
+        Integer year = timestamp.toLocalDateTime().getYear();
+        DAOFactory.getInstance().getProjectsStatsByMonthDAO().countInFinished(month, year);
     }
 
     public void updateProject(Integer projectId, String newName, String newProjectDescription, List<Integer> newTagsIds, List<Integer> newSkillsIds) throws SQLException {

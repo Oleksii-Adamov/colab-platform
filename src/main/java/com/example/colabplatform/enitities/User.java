@@ -10,6 +10,9 @@ public class User implements Entity {
     private String fullName;
     private String bio;
 
+    private Integer monthOfJoining;
+    private Integer yearOfJoining;
+
     private List<Tag> tags = new ArrayList<>();
 
     private List<Skill> skills = new ArrayList<>();
@@ -88,5 +91,21 @@ public class User implements Entity {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public Integer getMonthOfJoining() {
+        return monthOfJoining;
+    }
+
+    public void setMonthOfJoining(Integer monthOfJoining) {
+        this.monthOfJoining = monthOfJoining;
+    }
+
+    public Integer getYearOfJoining() {
+        return yearOfJoining;
+    }
+
+    public void setYearOfJoining(Integer yearOfJoining) {
+        this.yearOfJoining = yearOfJoining;
     }
 }

@@ -9,10 +9,7 @@ import com.example.colabplatform.enitities.User;
 import com.example.colabplatform.exceptions.ProjectDAOException;
 import com.example.colabplatform.exceptions.UserDAOException;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
@@ -20,10 +17,13 @@ public class UserDAOImpl implements UserDAO {
     public Integer create(User user) throws SQLException {
         String[] returnCols = { "USERID" };
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection()
-                .prepareStatement("INSERT INTO USERS (UserFullName, KeycloakUserID) VALUES(?, ?)",
+                .prepareStatement("INSERT INTO USERS (UserFullName, KeycloakUserID, MONTHOFJOINING, YEAROFJOINING) VALUES(?, ?, ?, ?)",
                         returnCols);
         preparedStatement.setString(1, user.getFullName());
         preparedStatement.setString(2, user.getKeycloakId());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        preparedStatement.setInt(3, timestamp.toLocalDateTime().getMonthValue());
+        preparedStatement.setInt(4, timestamp.toLocalDateTime().getYear());
         preparedStatement.execute();
         ConnectionFactory.instance().releaseConnection();
         ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -73,7 +73,7 @@ public class UserDAOImpl implements UserDAO {
     public User getUserInfo(Integer userId) throws SQLException {
         User user = new User();
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
-                "SELECT U.USERFULLNAME, U.USERBIO, U.RATING, U.NUMBEROFRATINGS" +
+                "SELECT U.USERFULLNAME, U.USERBIO, U.RATING, U.NUMBEROFRATINGS, U.MONTHOFJOINING, U.YEAROFJOINING" +
                         " FROM Users U" +
                         " WHERE U.USERID = ?");
         preparedStatement.setInt(1, userId);
@@ -83,8 +83,9 @@ public class UserDAOImpl implements UserDAO {
             user.setBio(rs.getString("USERBIO"));
             user.setRating(rs.getFloat("RATING"));
             user.setNumberOfRatings(rs.getInt("NUMBEROFRATINGS"));
+            user.setMonthOfJoining(rs.getInt("MONTHOFJOINING"));
+            user.setYearOfJoining(rs.getInt("YEAROFJOINING"));
         }
-
         if (user.getFullName() == null) return null;
 
         preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(

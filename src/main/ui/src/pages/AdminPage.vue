@@ -1,6 +1,5 @@
 <template>
-  <UserNavigation></UserNavigation>
-  <ProjectAdminNavigation></ProjectAdminNavigation>
+  <AdminNavigation></AdminNavigation>
   <div class="date-range-container">
     <div class="date-selectors">
       <div class="date-select">
@@ -42,34 +41,41 @@
 
     <!-- Display retrieved information -->
     <div v-if="showInfo" class="retrieved-info">
-      <h3>Project Contributions Stats:</h3>
-      <p>Number of Contributions: {{ contributionsStats.numberOfContributions }}</p>
-      <p>Total Value of Contributions: {{ contributionsStats.totalValueOfContributions }}</p>
-      <p>Average Value of Contributions: {{ contributionsStats.averageValueOfContributions }}</p>
-
-      <h3>Project New Collaborators Stats:</h3>
-      <p>Number of New Collaborators: {{ newUsersStats.numberOfNewUsers }}</p>
+      <h3>New Users Stats:</h3>
+      <p>Number of New Users: {{ newUsersStats.numberOfNewUsers }}</p>
       <p>Number of Contributions by them: {{ newUsersStats.numberOfContributions }}</p>
       <p>Total Value of Contributions by them: {{ newUsersStats.totalValueOfContributions }}</p>
       <p>Average Value of Contributions by them: {{ newUsersStats.averageValueOfContributions }}</p>
+
+      <h3>Projects Stats:</h3>
+      <p>Number of Created Projects: {{ projectsStats.numberOfCreatedProjects }}</p>
+      <p>Number of Finished Projects: {{ projectsStats.numberOfFinishedProjects }}</p>
+      <p>Number of Contributions: {{ projectsStats.numberOfContributions }}</p>
+
+      <h3>New Collaborators Stats (taken into account only contributions by them in newly joined projects):</h3>
+      <p>Number of New Collaborators: {{ newCollaboratorsStats.numberOfNewUsers }}</p>
+      <p>Number of Contributions by them: {{ newCollaboratorsStats.numberOfContributions }}</p>
+      <p>Total Value of Contributions by them: {{ newCollaboratorsStats.totalValueOfContributions }}</p>
+      <p>Average Value of Contributions by them: {{ newCollaboratorsStats.averageValueOfContributions }}</p>
     </div>
 
   </div>
 </template>
 
 <script>
-import UserNavigation from "@/components/UserNavigation";
-import ProjectAdminNavigation from "@/components/ProjectAdminNavigation";
-import {getProjectStats} from "@/services/ProjectService";
+
+import AdminNavigation from "@/components/AdminNavigation";
+import {getStats} from "@/services/adminService";
 
 export default {
-  name: "ProjectStatsPage",
-  components: {UserNavigation, ProjectAdminNavigation},
+  name: "AdminPage",
+  components: {AdminNavigation},
   data() {
     return {
       showInfo: false,
-      contributionsStats: {},
       newUsersStats: {},
+      projectsStats: {},
+      newCollaboratorsStats: {},
       months: Array.from({ length: 12 }, (_, i) => ({
         value: i + 1,
         label: new Date(0, i).toLocaleString('en-US', { month: 'long' })
@@ -91,23 +97,17 @@ export default {
   },
   methods: {
     retrieveInfo() {
-      const projectId = localStorage.getItem('projectId')
-      if (projectId) {
-        getProjectStats(projectId, this.beginningMonth, this.beginningYear, this.endMonth, this.endYear).then((response) => {
+        getStats(this.beginningMonth, this.beginningYear, this.endMonth, this.endYear).then((response) => {
           if (response) {
             const stats = response;
-            this.contributionsStats = stats.contributionsStats
-            this.contributionsStats.averageValueOfContributions = this.contributionsStats.totalValueOfContributions / this.contributionsStats.numberOfContributions
             this.newUsersStats = stats.newUsersStats
-            this.newUsersStats.averageValueOfContributions = this.newUsersStats.totalValueOfContributions / this.newUsersStats.numberOfContributions;
+            this.newUsersStats.averageValueOfContributions = this.newUsersStats.totalValueOfContributions / this.newUsersStats.numberOfContributions
+            this.projectsStats = stats.projectsStats
+            this.newCollaboratorsStats = stats.newCollaboratorsStats
+            this.newCollaboratorsStats.averageValueOfContributions = this.newCollaboratorsStats.totalValueOfContributions / this.newCollaboratorsStats.numberOfContributions
             this.showInfo = true;
           }
         })
-      } else {
-        this.showInfo = false;
-        alert("Project session expired")
-        this.$router.push({path: '/my-projects'});
-      }
     }
   }
 };

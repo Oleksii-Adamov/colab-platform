@@ -4,12 +4,16 @@ import com.example.colabplatform.dao.DAOFactory;
 import com.example.colabplatform.enitities.User;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class UserService {
     public Integer registerIfNot(String keycloakId, String fullName) throws SQLException {
         User user = DAOFactory.getInstance().getUserDAO().getByKeycloakId(keycloakId);
         if(user == null) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            DAOFactory.getInstance().getNewUsersStatsByMonthDAO().countInUser(timestamp.toLocalDateTime().getMonthValue(),
+                    timestamp.toLocalDateTime().getYear());
             return DAOFactory.getInstance().getUserDAO().create(new User(keycloakId, fullName));
         }
         else {
