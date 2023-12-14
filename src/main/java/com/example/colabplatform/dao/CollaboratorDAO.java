@@ -14,4 +14,6 @@ public interface CollaboratorDAO {
     Collaborator getByUserAndProjectId(Integer userId, Integer projectId) throws SQLException;
 
     void rateCollaborator(Integer collaboratorId, Integer rating) throws SQLException;
+
+    void countInContribution(Integer collaboratorId, Integer value) throws SQLException;
 }

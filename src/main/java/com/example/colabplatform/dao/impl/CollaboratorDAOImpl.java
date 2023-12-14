@@ -166,4 +166,19 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
             }
         }
     }
+    public void countInContribution(Integer collaboratorId, Integer value) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("UPDATE PROJECTCOLLABORATORS" +
+                        " SET NUMBEROFCONTRIBUTIONS = NUMBEROFCONTRIBUTIONS + 1, TOTALVALUE = TOTALVALUE + ?" +
+                        " WHERE COLLABORATORID = ?");
+
+        preparedStatement.setInt(1, value);
+        preparedStatement.setInt(2, collaboratorId);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if (rowsAffected < 1) {
+            throw new CollaboratorDAOException("Making user admin of project failed");
+        }
+    }
 }

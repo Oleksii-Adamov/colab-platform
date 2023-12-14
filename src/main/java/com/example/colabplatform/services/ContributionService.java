@@ -63,6 +63,9 @@ public class ContributionService {
     }
 
     private void countInContribution(Contribution contribution) throws SQLException {
+        DAOFactory.getInstance().getCollaboratorDAO().countInContribution(
+                DAOFactory.getInstance().getCollaboratorDAO().getByUserAndProjectId(contribution.getUserId(), contribution.getProjectId()).getId(), contribution.getValue());
+
         Integer month = contribution.getMonth();
         Integer year = contribution.getYear();
         logger.info("Month and year");
