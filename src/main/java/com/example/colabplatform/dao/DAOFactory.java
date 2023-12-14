@@ -21,6 +21,7 @@ public class DAOFactory {
 
     private final ProjectContributionsStatsByMonthDAO projectContributionsStatsByMonthDAO = new ProjectContributionsStatsByMonthDAOImpl();
 
+    private final ProjectNewUsersStatsByMonthDAO projectNewUsersStatsByMonthDAO = new ProjectNewUsersStatsByMonthDAOImpl();
     public static DAOFactory getInstance(){
         return daoFactory;
     }
@@ -54,5 +55,9 @@ public class DAOFactory {
 
     public ProjectContributionsStatsByMonthDAO getProjectContributionsStatsByMonthDAO() {
         return projectContributionsStatsByMonthDAO;
+    }
+
+    public ProjectNewUsersStatsByMonthDAO getProjectNewUsersStatsByMonthDAO() {
+        return projectNewUsersStatsByMonthDAO;
     }
 }

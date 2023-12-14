@@ -13,7 +13,7 @@ public class ProjectContributionsStatsByMonthDAOImpl implements ProjectContribut
 
     @Override
     public void countInContribution(Integer projectId, Integer month, Integer year, Integer value) throws SQLException {
-        // check if rating of this user already exists
+        // check if already exists
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
                 prepareStatement("SELECT NUMBEROFCONTRIBUTIONS, TOTALVALUEOFCONTRIBUTIONS" +
                         " FROM PROJECTCONTRIBUTIONSSTATSBYMONTH" +
@@ -36,6 +36,7 @@ public class ProjectContributionsStatsByMonthDAOImpl implements ProjectContribut
             preparedStatement.setInt(4, month);
             preparedStatement.setInt(5, year);
             int rowsAffected = preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
             if (rowsAffected < 1) {
                 throw new ProjectDAOException("PROJECTCONTRIBUTIONSSTATSBYMONTH update failed");
             }
@@ -51,6 +52,7 @@ public class ProjectContributionsStatsByMonthDAOImpl implements ProjectContribut
             preparedStatement.setInt(4, 1);
             preparedStatement.setInt(5, value);
             preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
         }
     }
 
@@ -87,6 +89,7 @@ public class ProjectContributionsStatsByMonthDAOImpl implements ProjectContribut
         preparedStatement.setInt(13, endMonth);
 
         ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
         if (rs.next()) {
             Integer totalContributions = rs.getInt(1);
             Integer totalValue = rs.getInt(2);

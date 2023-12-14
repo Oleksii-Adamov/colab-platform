@@ -13,4 +13,5 @@ public interface ContributionDAO {
     void reject(Integer contributionId) throws SQLException;
     List<Contribution> getProjectPendingContributions(Integer projectId) throws SQLException;
     List<Contribution> getProjectApprovedContributions(Integer projectId) throws SQLException;
+    Contribution getById(Integer contributionId) throws SQLException;
 }

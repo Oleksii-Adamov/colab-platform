@@ -2,11 +2,11 @@ package com.example.colabplatform.infoClasses;
 
 public class ProjectStats {
     private ContributionsStats contributionsStats;
-    // UsersContributionsStats newUsersStats;
-    // UserProjectStatsByMonth
+    private UsersContributionsStats newUsersStats;
 
-    public ProjectStats(ContributionsStats contributionsStats) {
+    public ProjectStats(ContributionsStats contributionsStats, UsersContributionsStats newUsersStats) {
         this.contributionsStats = contributionsStats;
+        this.newUsersStats = newUsersStats;
     }
 
     public ContributionsStats getContributionsStats() {
@@ -15,5 +15,13 @@ public class ProjectStats {
 
     public void setContributionsStats(ContributionsStats contributionsStats) {
         this.contributionsStats = contributionsStats;
+    }
+
+    public UsersContributionsStats getNewUsersStats() {
+        return newUsersStats;
+    }
+
+    public void setNewUsersStats(UsersContributionsStats newUsersStats) {
+        this.newUsersStats = newUsersStats;
     }
 }

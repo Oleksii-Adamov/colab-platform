@@ -5,6 +5,7 @@ import com.example.colabplatform.enitities.Application;
 import com.example.colabplatform.infoClasses.ApplicationInfo;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,10 @@ public class ApplicationService {
 
     public void approve(Integer applicationId, Integer userId, Integer projectId) throws SQLException {
         DAOFactory.getInstance().getApplicationDAO().approve(applicationId, userId, projectId);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInUser(projectId,
+                timestamp.toLocalDateTime().getMonthValue(),
+                timestamp.toLocalDateTime().getYear());
     }
 
     public void reject(Integer applicationId) throws SQLException {

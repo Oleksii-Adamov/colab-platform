@@ -5,8 +5,10 @@ import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 import com.example.colabplatform.infoClasses.ContributionsStats;
+import com.example.colabplatform.infoClasses.UsersContributionsStats;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ProjectService {
@@ -14,8 +16,16 @@ public class ProjectService {
                           List<Integer> skillsIds) throws SQLException {
         Integer createdProjectId = DAOFactory.getInstance().getProjectDAO().create(new Project(name, creatorUserId, projectDescription),
                 tagsIds, skillsIds);
+
         Integer creatorCollaboratorId = DAOFactory.getInstance().getCollaboratorDAO().create(new Collaborator(creatorUserId, createdProjectId));
+
         DAOFactory.getInstance().getCollaboratorDAO().makeAdmin(creatorCollaboratorId);
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().countInUser(createdProjectId,
+                timestamp.toLocalDateTime().getMonthValue(),
+                timestamp.toLocalDateTime().getYear());
+
         return  createdProjectId;
     }
 
@@ -54,4 +64,9 @@ public class ProjectService {
     public ContributionsStats getContributionStatsInRange(Integer projectId, Integer beginningMonth, Integer beginningYear, Integer endMonth, Integer endYear) throws SQLException {
         return DAOFactory.getInstance().getProjectContributionsStatsByMonthDAO().getStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear);
     }
+
+    public UsersContributionsStats getNewUsersStatsInRange(Integer projectId, Integer beginningMonth, Integer beginningYear, Integer endMonth, Integer endYear) throws SQLException {
+        return DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().getStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear);
+    }
+
 }

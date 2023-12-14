@@ -184,7 +184,9 @@ public class ProjectsController extends AbstractController {
                 Integer endMonth = ValidationCommons.getValidatedMonth(endMonthStr);
                 String endYearStr = req.getParameter("endYear");
                 Integer endYear = ValidationCommons.getValidatedYear(endYearStr);
-                ProjectStats projectStats = new ProjectStats(projectService.getContributionStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear));
+                ProjectStats projectStats = new ProjectStats(
+                        projectService.getContributionStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear),
+                        projectService.getNewUsersStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear));
                 jsonResponse = new Gson().toJson(projectStats);
                 this.responseOut.print(jsonResponse);
             }

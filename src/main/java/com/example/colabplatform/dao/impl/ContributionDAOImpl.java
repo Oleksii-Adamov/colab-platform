@@ -79,6 +79,22 @@ public class ContributionDAOImpl implements ContributionDAO {
         return getProjectContributionsWithStatus(projectId, Contribution.Status.APPROVED);
     }
 
+    public Contribution getById(Integer contributionId) throws SQLException {
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT c.CONTRIBUTIONID, c.UserID, c.ProjectID, c.CONTRIBUTIONDESCRIPTION, c.CONTRIBUTIONDATE, c.CONTRIBUTIONVALUE, c.Status" +
+                        " FROM CONTRIBUTIONS c" +
+                        " WHERE c.CONTRIBUTIONID = ?");
+        preparedStatement.setInt(1, contributionId);
+        ResultSet rs = preparedStatement.executeQuery();
+        ConnectionFactory.instance().releaseConnection();
+        if (rs.next()) {
+            return contributionFromResultSet(rs, false);
+        }
+        else {
+            return null;
+        }
+    }
+
     private List<Contribution> getProjectContributionsWithStatus(Integer projectId, Contribution.Status status) throws SQLException {
         PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
                 "SELECT c.CONTRIBUTIONID, c.UserID, c.ProjectID, c.CONTRIBUTIONDESCRIPTION, c.CONTRIBUTIONDATE, c.CONTRIBUTIONVALUE, c.Status" +
@@ -95,25 +111,29 @@ public class ContributionDAOImpl implements ContributionDAO {
     private List<Contribution> contributionsFromResultSet(ResultSet rs, boolean expectApprovalDate) throws SQLException {
         List<Contribution> contributions = new ArrayList<>();
         while (rs.next()) {
-            Contribution contribution = new Contribution();
-            contribution.setId(rs.getInt(1));
-            contribution.setUserId(rs.getInt(2));
-            contribution.setProjectId(rs.getInt(3));
-            contribution.setDescription(rs.getString(4));
-            Timestamp timestamp = rs.getTimestamp(5);
-            contribution.setDay(timestamp.toLocalDateTime().getDayOfMonth());
-            contribution.setMonth(timestamp.toLocalDateTime().getMonthValue());
-            contribution.setYear(timestamp.toLocalDateTime().getYear());
-            contribution.setValue(rs.getInt(6));
-            contribution.setStatus(Contribution.Status.valueOf(rs.getString(7)));
-            if (expectApprovalDate) {
-                timestamp = rs.getTimestamp(8);
-                contribution.setApproveDay(timestamp.toLocalDateTime().getDayOfMonth());
-                contribution.setApproveMonth(timestamp.toLocalDateTime().getMonthValue());
-                contribution.setApproveYear(timestamp.toLocalDateTime().getYear());
-            }
-            contributions.add(contribution);
+            contributions.add(contributionFromResultSet(rs, expectApprovalDate));
         }
         return contributions;
+    }
+
+    private Contribution contributionFromResultSet(ResultSet rs, boolean expectApprovalDate) throws SQLException  {
+        Contribution contribution = new Contribution();
+        contribution.setId(rs.getInt(1));
+        contribution.setUserId(rs.getInt(2));
+        contribution.setProjectId(rs.getInt(3));
+        contribution.setDescription(rs.getString(4));
+        Timestamp timestamp = rs.getTimestamp(5);
+        contribution.setDay(timestamp.toLocalDateTime().getDayOfMonth());
+        contribution.setMonth(timestamp.toLocalDateTime().getMonthValue());
+        contribution.setYear(timestamp.toLocalDateTime().getYear());
+        contribution.setValue(rs.getInt(6));
+        contribution.setStatus(Contribution.Status.valueOf(rs.getString(7)));
+        if (expectApprovalDate) {
+            timestamp = rs.getTimestamp(8);
+            contribution.setApproveDay(timestamp.toLocalDateTime().getDayOfMonth());
+            contribution.setApproveMonth(timestamp.toLocalDateTime().getMonthValue());
+            contribution.setApproveYear(timestamp.toLocalDateTime().getYear());
+        }
+        return contribution;
     }
 }

@@ -98,12 +98,8 @@ export default {
             const stats = response;
             this.contributionsStats = stats.contributionsStats
             this.contributionsStats.averageValueOfContributions = this.contributionsStats.totalValueOfContributions / this.contributionsStats.numberOfContributions
-            this.newUsersStats = {
-              numberOfNewUsers: 20,
-              numberOfContributions: 70,
-              totalValueOfContributions: 2000,
-              averageValueOfContributions: 28.57
-            };
+            this.newUsersStats = stats.newUsersStats
+            this.newUsersStats.averageValueOfContributions = this.newUsersStats.totalValueOfContributions / this.newUsersStats.numberOfContributions;
             this.showInfo = true;
           }
         })
