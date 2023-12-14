@@ -6,6 +6,7 @@ import com.example.colabplatform.enitities.Project;
 import com.example.colabplatform.exceptions.ProjectValidatorException;
 import com.example.colabplatform.exceptions.UserValidatorException;
 import com.example.colabplatform.exceptions.ValidationCommonsException;
+import com.example.colabplatform.infoClasses.CollaboratorInfo;
 import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
 import com.example.colabplatform.infoClasses.ProjectStats;
 import com.example.colabplatform.services.ProjectService;
@@ -90,6 +91,22 @@ public class ProjectsController extends AbstractController {
                 String projectIdString = req.getParameter("projectId");
                 Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
                 projectService.markAsFinished(projectId);
+            }
+            else if (requestMapping("/make-admin")) {
+                String collaboratorIdString = req.getParameter("collaboratorId");
+                Integer collaboratorId = projectValidator.getValidatedProjectId(collaboratorIdString);
+                projectService.makeAdmin(collaboratorId);
+                this.responseOut.print("{}");
+            }
+            else if (requestMapping("/rate-colab")) {
+                String collaboratorIdString = req.getParameter("collaboratorId");
+                Integer collaboratorId = projectValidator.getValidatedProjectId(collaboratorIdString);
+                String ratingString = req.getParameter("rating");
+                Integer rating = projectValidator.getValidatedProjectRating(ratingString);
+                logger.info("started rateCollaborator");
+                projectService.rateCollaborator(collaboratorId, rating);
+                logger.info("finished rateCollaborator");
+                this.responseOut.print("{}");
             }
             else {
                 logger.warn("No such path " + req.getRequestURI());
@@ -188,6 +205,14 @@ public class ProjectsController extends AbstractController {
                         projectService.getContributionStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear),
                         projectService.getNewUsersStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear));
                 jsonResponse = new Gson().toJson(projectStats);
+                this.responseOut.print(jsonResponse);
+            }
+            else if (requestMapping("/collaborators")) {
+                logger.info("/collaborators");
+                String projectIdString = req.getParameter("projectId");
+                Integer projectId = projectValidator.getValidatedProjectId(projectIdString);
+                List<CollaboratorInfo> collaborators = projectService.getCollaborators(projectId);
+                jsonResponse = new Gson().toJson(collaborators);
                 this.responseOut.print(jsonResponse);
             }
             else {

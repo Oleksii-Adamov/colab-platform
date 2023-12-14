@@ -2,13 +2,13 @@ package com.example.colabplatform.services;
 
 import com.example.colabplatform.dao.DAOFactory;
 import com.example.colabplatform.enitities.Collaborator;
+import com.example.colabplatform.enitities.Contribution;
 import com.example.colabplatform.enitities.Project;
-import com.example.colabplatform.infoClasses.CollaboratorProjectInfo;
-import com.example.colabplatform.infoClasses.ContributionsStats;
-import com.example.colabplatform.infoClasses.UsersContributionsStats;
+import com.example.colabplatform.infoClasses.*;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectService {
@@ -77,6 +77,27 @@ public class ProjectService {
 
     public UsersContributionsStats getNewUsersStatsInRange(Integer projectId, Integer beginningMonth, Integer beginningYear, Integer endMonth, Integer endYear) throws SQLException {
         return DAOFactory.getInstance().getProjectNewUsersStatsByMonthDAO().getStatsInRange(projectId, beginningMonth, beginningYear, endMonth, endYear);
+    }
+    public void makeAdmin(Integer collaboratorId) throws SQLException {
+        DAOFactory.getInstance().getCollaboratorDAO().makeAdmin(collaboratorId);
+    }
+
+    public void rateCollaborator(Integer collaboratorId, Integer rating) throws SQLException {
+        DAOFactory.getInstance().getCollaboratorDAO().rateCollaborator(collaboratorId, rating);
+    }
+
+    public List<CollaboratorInfo> getCollaborators(Integer projectId) throws SQLException {
+        List<Collaborator> collaborators = DAOFactory.getInstance().getCollaboratorDAO().getProjectCollaborators(projectId);
+        return attachUserInfoToCollaborators(collaborators);
+    }
+
+    private List<CollaboratorInfo> attachUserInfoToCollaborators(List<Collaborator> collaborators) throws SQLException {
+        List<CollaboratorInfo> collaboratorInfos = new ArrayList<>();
+        for (Collaborator collaborator : collaborators) {
+            String userFullName = DAOFactory.getInstance().getUserDAO().getFullNameById(collaborator.getUserId());
+            collaboratorInfos.add(new CollaboratorInfo(userFullName, collaborator));
+        }
+        return collaboratorInfos;
     }
 
 }

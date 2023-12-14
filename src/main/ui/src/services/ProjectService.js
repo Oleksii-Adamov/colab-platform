@@ -32,6 +32,10 @@ export async function getProjectStats(projectId, beginningMonth, beginningYear, 
         '&endMonth='+ endMonth + '&endYear='+ endYear);
 }
 
+export async function getProjectCollaborators(projectId) {
+    return getRequest('/api/projects/collaborators?projectId=' + projectId);
+}
+
 export async function createProject(projectName, projectDescription, selectedTags, selectedSkills, action) {
     return postRequest('/api/projects/create?name=' + projectName + '&userId=' + localStorage.getItem('userId'),
         {'projectDescription': projectDescription, 'selectedTags': selectedTags,
@@ -55,3 +59,12 @@ export async function markAsFinished(projectId, action) {
         {}, action);
 }
 
+export async function makeAdmin(collaboratorId, action) {
+    return postRequest('/api/projects/make-admin?collaboratorId=' + collaboratorId,
+        {}, action);
+}
+
+export async function rateCollaborator(collaboratorId, rating, action) {
+    return postRequest('/api/projects/rate-colab?collaboratorId=' + collaboratorId + '&rating=' + rating,
+        {}, action);
+}

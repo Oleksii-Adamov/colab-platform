@@ -7,6 +7,7 @@ import com.example.colabplatform.enitities.Application;
 import com.example.colabplatform.enitities.Collaborator;
 import com.example.colabplatform.exceptions.ApplicationDAOException;
 import com.example.colabplatform.exceptions.CollaboratorDAOException;
+import com.example.colabplatform.exceptions.ProjectDAOException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -103,5 +104,66 @@ public class CollaboratorDAOImpl implements CollaboratorDAO {
         collaborator.setNumberOfContributions(rs.getInt(7));
         collaborator.setTotalValue(rs.getInt(8));
         return collaborator;
+    }
+    @Override
+    public void rateCollaborator(Integer collaboratorId, Integer rating) throws SQLException {
+        // check if exists
+        boolean isUpdate = true;
+        Integer prevRating = 0;
+        Integer userId = 0;
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("SELECT CB.RATING, CB.USERID " +
+                        " FROM PROJECTCOLLABORATORS CB" +
+                        " WHERE CB.COLLABORATORID = ?");
+        preparedStatement.setInt(1, collaboratorId);
+        ResultSet rs = preparedStatement.executeQuery();
+        if (rs.next()) {
+            prevRating = rs.getInt(1);
+            if (prevRating == 0) {
+                isUpdate = false;
+            }
+            userId = rs.getInt(2);
+        }
+        // update rating entry
+        preparedStatement = ConnectionFactory.instance().getConnection().
+                prepareStatement("UPDATE PROJECTCOLLABORATORS CB" +
+                        " SET CB.RATING = ?" +
+                        " WHERE CB.COLLABORATORID = ?");
+        preparedStatement.setInt(1, rating);
+        preparedStatement.setInt(2, collaboratorId);
+        int rowsAffected = preparedStatement.executeUpdate();
+        if (rowsAffected < 1) {
+            throw new ProjectDAOException("Colab rating update failed");
+        }
+        // update average rating
+        if (isUpdate) {
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("UPDATE Users U" +
+                            " SET U.rating = (U.rating * U.NUMBEROFRATINGS + ?) / U.NUMBEROFRATINGS" +
+                            " WHERE U.USERID = ?");
+            preparedStatement.setInt(1, rating - prevRating);
+            preparedStatement.setInt(2, userId);
+            rowsAffected = preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
+            if (rowsAffected < 1) {
+                throw new ProjectDAOException("User average rating update failed");
+            }
+        }
+        else {
+            // update average rating and count
+            preparedStatement = ConnectionFactory.instance().getConnection().
+                    prepareStatement("UPDATE Users U" +
+                            " SET U.rating = (U.rating * U.NUMBEROFRATINGS + ?) / (U.NUMBEROFRATINGS + 1)," +
+                            " U.NUMBEROFRATINGS = U.NUMBEROFRATINGS + 1" +
+                            " WHERE U.USERID = ?");
+            preparedStatement.setInt(1, rating);
+            preparedStatement.setInt(2, userId);
+
+            rowsAffected = preparedStatement.executeUpdate();
+            ConnectionFactory.instance().releaseConnection();
+            if (rowsAffected < 1) {
+                throw new ProjectDAOException("User average rating update failed");
+            }
+        }
     }
 }

@@ -167,6 +167,52 @@ public class ProjectDAOImpl implements ProjectDAO {
         ConnectionFactory.instance().releaseConnection();
         return project;
     }
+
+    @Override
+    public List<Project> getProjectsFullInfo() throws SQLException {
+        List<Project> projects = new ArrayList<>();
+        PreparedStatement preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                "SELECT P.ProjectName, P.PROJECTDESCRIPTION, P.RATING, P.NUMBEROFRATINGS, P.ISFINISHED, P.PROJECTID" +
+                        " FROM Projects P");
+        ResultSet rs = preparedStatement.executeQuery();
+        while (rs.next()) {
+            Project project = new Project();
+            project.setName(rs.getString("ProjectName"));
+            project.setDescription(rs.getString("PROJECTDESCRIPTION"));
+            project.setRating(rs.getFloat("RATING"));
+            project.setNumberOfRatings(rs.getInt("NUMBEROFRATINGS"));
+            project.setFinished(rs.getInt("ISFINISHED"));
+            project.setId(rs.getInt("PROJECTID"));
+            preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                    "SELECT T.TAGID, T.TAGNAME" +
+                            " FROM Projects P" +
+                            " INNER JOIN PROJECTTAGSASSIGNMENTS PT on P.PROJECTID = PT.PROJECTID" +
+                            " INNER JOIN TAGS T on PT.TAGID = T.TAGID" +
+                            " WHERE P.PROJECTID = ?");
+            preparedStatement.setInt(1, project.getId());
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                project.getTags().add(new Tag(rs.getInt("TAGID"),rs.getString("TAGNAME")));
+            }
+            if (project.getName() == null) return null;
+
+            preparedStatement = ConnectionFactory.instance().getConnection().prepareStatement(
+                    "SELECT S.SKILLID, S.SKILLNAME" +
+                            " FROM Projects P" +
+                            " INNER JOIN PROJECTSKILLASSIGNMENTS PS on P.PROJECTID = PS.PROJECTID" +
+                            " INNER JOIN SKILLS S on S.SKILLID = PS.SKILLID" +
+                            " WHERE P.PROJECTID = ?");
+            preparedStatement.setInt(1, project.getId());
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                project.getSkills().add(new Skill(rs.getInt("SKILLID"), rs.getString("SKILLNAME")));
+            }
+
+            projects.add(project);
+        }
+        ConnectionFactory.instance().releaseConnection();
+        return projects;
+    }
     @Override
     public void rateProject(Integer projectId, Integer userId, Integer rating) throws SQLException {
         // check if rating of this user already exists

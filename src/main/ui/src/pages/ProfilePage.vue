@@ -1,6 +1,5 @@
 <template>
   <UserNavigation></UserNavigation>
-  <ProfileNavigation></ProfileNavigation>
   <template v-if="user !== null && user !== undefined">
    <h1>{{this.user.fullName}}</h1>
     <h2 v-if="this.user.numberOfRatings && this.user.numberOfRatings > 0">User's rating (average from projects): {{this.user.rating}}/5 (based on {{this.user.numberOfRatings}} grades)</h2>
@@ -50,7 +49,6 @@
 </template>
 
 <script>
-import ProfileNavigation from "@/components/ProfileNavigation";
 import {
   getProjectsThatUserIn,
 } from "@/services/ProjectService";
@@ -58,7 +56,7 @@ import {getUserInfo} from "@/services/userService";
 import UserNavigation from "@/components/UserNavigation";
 export default {
   name: "ProfilePage",
-  components: {UserNavigation, ProfileNavigation},
+  components: {UserNavigation},
   data() {
     return {
       user: null,

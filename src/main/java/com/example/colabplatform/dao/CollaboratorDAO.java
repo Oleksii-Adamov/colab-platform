@@ -12,4 +12,6 @@ public interface CollaboratorDAO {
     void makeAdmin(Integer collaboratorId) throws SQLException;
 
     Collaborator getByUserAndProjectId(Integer userId, Integer projectId) throws SQLException;
+
+    void rateCollaborator(Integer collaboratorId, Integer rating) throws SQLException;
 }

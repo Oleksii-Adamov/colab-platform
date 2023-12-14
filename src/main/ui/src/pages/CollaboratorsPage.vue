@@ -15,9 +15,9 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="collaboratorInfo in collaborators" :key="contributionInfo.contribution.id">
+      <tr v-for="collaboratorInfo in collaborators" :key="collaboratorInfo.collaborator.id">
         <td>
-          <router-link :to="{ name: 'profile-page', params: { id: collaboratorInfo.contribution.userId} }">
+          <router-link :to="{ name: 'profile-page', params: { id: collaboratorInfo.collaborator.userId} }">
             {{ collaboratorInfo.userFullName }}
           </router-link>
         </td>
@@ -27,7 +27,6 @@
             Collaborator
             <button @click="makeAdmin(collaboratorInfo.collaborator.id)">Make Admin</button>
           </div>
-          {{ collaboratorInfo.collaborator.isAdmin === true ? "Admin" : "Collaborator" }}
         </td>
         <td>{{ collaboratorInfo.collaborator.totalValue}}</td>
         <td>{{ collaboratorInfo.collaborator.numberOfContributions }}</td>
@@ -37,7 +36,7 @@
             <span class="star" v-for="(star, index) in 5" :key="index" @click="rateCollaborator(collaboratorInfo.collaborator.id, index + 1)" :class="{ 'filled': index < collaboratorInfo.collaborator.rating }">&#9733;</span>
           </div>
         </td>
-        <td>{{ collaboratorInfo.collaborator.dayOfJoining }}/{{ unfinishedProjectUserInfo.collaborator.monthOfJoining}}/{{ unfinishedProjectUserInfo.collaborator.yearOfJoining}}</td>
+        <td>{{ collaboratorInfo.collaborator.dayOfJoining }}/{{ collaboratorInfo.collaborator.monthOfJoining}}/{{ collaboratorInfo.collaborator.yearOfJoining}}</td>
       </tr>
 
       </tbody>
@@ -48,8 +47,7 @@
 <script>
 import ProjectAdminNavigation from "@/components/ProjectAdminNavigation";
 import UserNavigation from "@/components/UserNavigation";
-import {getUserInfo} from "@/services/userService";
-import {getProjectsThatUserIn} from "@/services/ProjectService";
+import {getProjectCollaborators, makeAdmin, rateCollaborator} from "@/services/ProjectService";
 
 export default {
   name: "CollaboratorsPage",
@@ -64,10 +62,27 @@ export default {
   },
   methods: {
     makeAdmin(id) {
-      // make admin
+      // make collaborator.isAdmin = true for collaborators.collaborator.id = id
+      const collaboratorToUpdate = this.collaborators.find(collaboratorInfo => collaboratorInfo.collaborator.id === id);
+      if (collaboratorToUpdate) {
+        collaboratorToUpdate.collaborator.isAdmin = true;
+      } else {
+        console.error('Collaborator not found.');
+      }
+      makeAdmin(id, (response) => {
+        console.log(response)
+      })
     },
     rateCollaborator(id, rating) {
-      // rate
+      const collaboratorToUpdate = this.collaborators.find(collaboratorInfo => collaboratorInfo.collaborator.id === id);
+      if (collaboratorToUpdate) {
+        collaboratorToUpdate.collaborator.rating = rating;
+      } else {
+        console.error('Collaborator not found.');
+      }
+      rateCollaborator(id, rating, (response) => {
+        console.log(response)
+      })
     }
   },
   mounted() {
@@ -75,7 +90,7 @@ export default {
     if (projectId) {
       getProjectCollaborators(projectId).then(response => {
         console.log(response)
-        this.pendingContributions = response
+        this.collaborators = response
       })
     }
     else {

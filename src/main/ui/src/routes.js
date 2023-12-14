@@ -11,6 +11,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import UpdateProfilePage from "@/pages/UpdateProfilePage";
 import ProjectStatsPage from "@/pages/ProjectStatsPage";
 import AdminPage from "@/pages/AdminPage";
+import CollaboratorsPage from "@/pages/CollaboratorsPage";
 
 
 export default [
@@ -49,6 +50,11 @@ export default [
         path: '/projects/pending-contributions',
         name: 'pending-contributions-page',
         component: PendingContributionsPage,
+    },
+    {
+        path: '/projects/collaborators',
+        name: 'collaborators-page',
+        component: CollaboratorsPage,
     },
     {
         path: '/projects/edit',
